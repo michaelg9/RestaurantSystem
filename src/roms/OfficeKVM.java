@@ -70,7 +70,7 @@ public class OfficeKVM extends AbstractIODevice {
      * Complete the methods for handling trigger input events.
      * 
      */
-
+    private OfficeOperations officeOps = new OfficeOperations();
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
      */
@@ -81,17 +81,18 @@ public class OfficeKVM extends AbstractIODevice {
 
     public void showMenu() {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        //Displays the current menu
+        displayMenu(officeOps.getMenu());
     }
  
     public void addToMenu(String menuID, String description, Money price) {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        officeOps.addMenuItem(new MenuItem(new MenuItemId(menuID), description, price));
     }
 
     public void removeFromMenu(String menuID) {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        officeOps.deleteExistingItem(new MenuItemId(menuID));
     }
 
     /*
