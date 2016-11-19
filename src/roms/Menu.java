@@ -38,7 +38,7 @@ public class Menu {
     public Menu(){}
     
     public List<String> toStrings() {
- 
+        //converts the menu to a string for printing
         String[] stringArray=new String[catalogue.size()*3];
         for (int i=0;i<stringArray.length;i+=3){
             MenuItem item= catalogue.get(i);
@@ -52,17 +52,14 @@ public class Menu {
     }
     
     public void addNewItem(MenuItem item){
-        //TODO: assert not already exists
+        //precondition: item doesn't already exist in the menu
         for(int i=0;i<catalogue.size();i++){
             //Add the Menu Item in the correct lexicographic ordered position
             String currentItemId=catalogue.get(i).getMenuItemId().getId();
             String addItemId = item.getMenuItemId().getId();
-            int comparison = currentItemId.compareTo(addItemId); 
-            if(comparison == 0){
-                //TODO: HANDLE EXISTING EQUAL
-                //throw EXCEPTION
-                break;
-            }
+            int comparison = currentItemId.compareTo(addItemId);
+            //if item already exists, exit with appropriate error message
+            assert (comparison!=0) : "Attempt to add already existing item";
             if(comparison > 0){
                 catalogue.add(i,item);
                 break;
@@ -71,12 +68,16 @@ public class Menu {
     }
     
     public void deleteExistingItem(MenuItemId id){
-        //TODO:assert already exists
+        //precondition: item doesn't already exist in the menu
+        boolean exists = false;
         for (MenuItem item:catalogue){
             if (item.getMenuItemId().equals(id)){
                 catalogue.remove(item);
+                exists=true;
                 break;
             }
         }
+        //if item already exists, exit with appropriate error message
+        assert (!exists) : "Attempt to remove non-existing item";
     }
 }

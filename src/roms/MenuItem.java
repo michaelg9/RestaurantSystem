@@ -20,6 +20,7 @@ public class MenuItem {
     }
     public void setPrice(Money price) {
         //TODO: assert positive
+        assert (price.toString().charAt(0)=='-') : "Negative price given";
         this.price = price;
     }
     public String getDescription() {
