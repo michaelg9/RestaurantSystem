@@ -70,10 +70,10 @@ public class Menu {
         }
     }
     
-    public void deleteExistingItem(MenuItemId id){
+    public void deleteExistingItem(MenuItemId itemId){
         //TODO:assert already exists
         for (MenuItem item:catalogue){
-            if (item.getMenuItemId().equals(id)){
+            if (item.getMenuItemId().equals(itemId)){
                 catalogue.remove(item);
                 break;
             }

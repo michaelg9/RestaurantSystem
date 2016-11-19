@@ -1,18 +1,18 @@
 package roms;
 
 public class MenuItem {
-    private MenuItemId menuItemId;
+    private MenuItemId id;
     private String description;
     private Money price;
 
     public MenuItem(MenuItemId id,String description,Money price){
-        this.menuItemId=id;
+        this.id=id;
         this.description=description;
         this.price=price;
     }
     
     public MenuItemId getMenuItemId() {
-        return menuItemId;
+        return id;
     }
 
     public Money getPrice() {
