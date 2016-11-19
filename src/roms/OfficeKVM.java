@@ -70,11 +70,11 @@ public class OfficeKVM extends AbstractIODevice {
      * Complete the methods for handling trigger input events.
      * 
      */
-    private OfficeOperations officeOps = new OfficeOperations();
+    
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
      */
-    
+    private OfficeOperations officeOps = new OfficeOperations();
     /*
      * SUPPORT FOR TRIGGER INPUT MESSAGES
      */
