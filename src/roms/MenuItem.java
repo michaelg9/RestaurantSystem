@@ -26,6 +26,7 @@ public class MenuItem {
     }
     public void setPrice(Money price) {
         logger.fine("Entry");
+        //precondition: price given is non-negative
         assert (price.toString().charAt(0)=='-') : "Negative price given";
         this.price = price;
     }
