@@ -19,7 +19,7 @@ public class MenuItem {
         return price;
     }
     public void setPrice(Money price) {
-        //TODO: assert positive
+        //precondition: price given is non-negative
         assert (price.toString().charAt(0)=='-') : "Negative price given";
         this.price = price;
     }
