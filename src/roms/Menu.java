@@ -67,11 +67,11 @@ public class Menu {
         }
     }
     
-    public void deleteExistingItem(MenuItemId id){
+    public void deleteExistingItem(MenuItemId itemId){
         //precondition: item doesn't already exist in the menu
         boolean exists = false;
         for (MenuItem item:catalogue){
-            if (item.getMenuItemId().equals(id)){
+            if (item.getMenuItemId().equals(itemId)){
                 catalogue.remove(item);
                 exists=true;
                 break;
