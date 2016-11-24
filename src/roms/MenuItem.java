@@ -11,8 +11,7 @@ public class MenuItem {
     public MenuItem(MenuItemId id,String description,Money price){
         logger.fine("new MenuItem instance creation");
         //precondition: price given is non-negative
-        assert (price.toString().charAt(0)=='-') : "Negative price given";
-        assert (false) : "Negative price given";
+        assert (price.toString().charAt(0)!='-') : "Negative price given";
         this.id=id;
         this.description=description;
         this.price=price;

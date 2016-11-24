@@ -177,6 +177,9 @@ public class SystemTest extends TestBasis {
        
         button.setSystemCore(systemCore);
         systemCore.setPassLight(light);
+        
+        //Ticket ticket = new Ticket();
+        //ticket.setTime(Clock.getInstance());
                
         
         // TABLE-RELATED
