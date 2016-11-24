@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * 
  * Menu objects are used to describe the menu of the restaurant.
  * Internally, it contains a list MenuItems as well as provides 
- * methods for modifying the Menu itself.
+ * methods for modifying the Menu.
  * 
  * @author pbj
  *
