@@ -30,7 +30,97 @@ public class SystemTest extends TestBasis {
         
         runAndCheck();
     }
+    
+    @Test
+    public void showOfficeMenu(){
+        //Tests the output of an empty Menu
+        logger.info(makeBanner("showOfficeMenu"));
+        input("1 19:00, OfficeKVM, okvm, showMenu"); 
+        expect("1 19:00, OfficeKVM, okvm, viewMenu, tuples, 3, ID, Description, Price"); 
+        
+        runAndCheck();
+    }
+    
+    private void populateMenu(){
+        //Populates the Menu with some default items
+        input("1 18:00, OfficeKVM, okvm, addToMenu, D1, Wine, 2.50");
+        input("1 18:00, OfficeKVM, okvm, addToMenu, D2, Soft drink, 1.50");
+        input("1 18:00, OfficeKVM, okvm, addToMenu, M2, Veg chili, 6.70");
+    }
+    
+    @Test
+    public void addToMenu(){
+        //Check Basic addition to Menu 
+        logger.info(makeBanner("addToMenu"));
+        populateMenu();
+        input("1 19:00, OfficeKVM, okvm, showMenu"); 
+        expect("1 19:00, OfficeKVM, okvm, viewMenu, tuples, 3, ID, Description, Price, "
+                + "D1, Wine, 2.50, "
+                + "D2, Soft drink, 1.50, "
+                + "M2, Veg chili, 6.70"); 
+        
+        runAndCheck();
+    }
 
+    @Test
+    public void removeFromMenu(){
+        //Check removal of an item from the Menu
+        logger.info(makeBanner("removeFromMenu"));
+        populateMenu();
+        input("1 18:00, OfficeKVM, okvm, removeFromMenu, D2");
+        input("1 19:00, OfficeKVM, okvm, showMenu"); 
+        expect("1 19:00, OfficeKVM, okvm, viewMenu, tuples, 3, ID, Description, Price, "
+                + "D1, Wine, 2.50, "
+                + "M2, Veg chili, 6.70"); 
+        
+        runAndCheck();
+    }
+    @Test
+    public void addToMenuOrderCheck(){
+        //Check if the ordering of the Menu items is correct
+        logger.info(makeBanner("addToMenuOrderCheck"));
+        input("1 18:00, OfficeKVM, okvm, addToMenu, Z1, Eggs, 2.50");
+        input("1 18:00, OfficeKVM, okvm, addToMenu, D2, Ouzo, 5.00");
+        input("1 18:00, OfficeKVM, okvm, addToMenu, W1, Halloumi Burger, 3.50");
+        input("1 18:00, OfficeKVM, okvm, addToMenu, A1, Souvlaki, 8.00");
+        input("1 19:00, OfficeKVM, okvm, showMenu"); 
+        expect("1 19:00, OfficeKVM, okvm, viewMenu, tuples, 3, ID, Description, Price, "
+                + "A1, Souvlaki, 8.00, "
+                + "D2, Ouzo, 5.00, "
+                + "W1, Halloumi Burger, 3.50, "
+                + "Z1, Eggs, 2.50"); 
+        
+        runAndCheck();
+    }
+    
+ 
+    
+    @Test(expected = AssertionError.class)
+    public void addExistingItemCheck() throws AssertionError{
+        /*Check if an Assertion Error is thrown if there is
+         *  an addition of an item to the Menu with the same
+         *  MenuId of an existing item in the Menu
+         */
+        logger.info(makeBanner("addToMenuOrderCheck"));
+        populateMenu();
+        input("1 18:30, OfficeKVM, okvm, addToMenu, D2, Soft drink, 1.50");
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void removeNonexistingItemCheck() throws AssertionError{
+        /*Check if an Assertion Error is thrown if there is 
+         * an attempt to remove a nonexisting item to the Menu
+         */
+        logger.info(makeBanner("removeNonexistingItemCheck"));
+        populateMenu();
+        input("1 18:30, OfficeKVM, okvm, removeFromMenu, Z3");
+        
+        runAndCheck();
+    }
+
+    
  
    /*
     * Put all your JUnit system-level tests above.
