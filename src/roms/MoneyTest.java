@@ -31,14 +31,12 @@ public class MoneyTest {
         //tests the empty constructor. 
         //It should return a non null object with value 0
         Money money = new Money();
-        //check if constructor returns null
-        assertNotNull(money);
         //check if empty constructor assigns the 0 value by default
         assertEquals("0.00", money.toString());
     }
     
     @Test
-    public void testStringConstructor() {
+    public void testStringConstructor(){
         //tests the constructor with string argument. 
         //It should return a non null object with a rounded value of the given string, rounded and appended with 
         //trailing 0s if needed

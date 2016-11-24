@@ -5,17 +5,54 @@ package roms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author pbj
  *
  */
 public class Ticket {
- 
+    
+    private ArrayList<OrderItem> order=new ArrayList<OrderItem>(); 
+    protected static final Logger logger = Logger.getLogger("roms");
+    private Money amount;
+    private TicketId id;
+    private Date date;
     private String tableID;
+    
+
+    public Ticket(TicketId id) {
+        logger.fine("Entry");
+        this.id = id;
+        amount=new Money();
+    }
+
+    public Money getAmount() {
+        return amount;
+    }
+    
     public String getTableID() { 
         return tableID; 
+    }
+
+    public void updateAmount() {
+        Money total=new Money();
+        for (OrderItem item : order){total=total.add(item.getItem().getPrice());}
+        setAmount(total);
+    }
+
+    private void setAmount(Money amount) {
+        this.amount = amount;
+    }
+
+    public TicketId getId() {
+        return id;
+    }
+
+    public Date getDate() {
+        return date;
     }
     
     /**
