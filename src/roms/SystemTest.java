@@ -148,7 +148,7 @@ public class SystemTest extends TestBasis {
     * implementation phases defined in the Coursework 3 handout.  It should 
     * not be touched. 
     * 
-    * The second part here only gives the configuration for the demonstration
+    * The second part herTickete only gives the configuration for the demonstration
     * design.  It has to be modified for the system implementation.
     *   
     * 

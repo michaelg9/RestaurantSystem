@@ -23,10 +23,11 @@ public class Ticket {
     private String tableID;
     
 
-    public Ticket(TicketId id) {
+    public Ticket(TicketId id, String tableID) {
         logger.fine("Entry");
         this.id = id;
         amount=new Money();
+        this.tableID=tableID;
     }
 
     public Money getAmount() {
@@ -55,6 +56,10 @@ public class Ticket {
         return date;
     }
     
+    public void add(OrderItem item){
+        assert
+    }
+    
     /**
      * Format ticket as list of strings, with, per ticket item, 3 strings for 
      * respectively:
@@ -77,14 +82,15 @@ public class Ticket {
      * @return
      */
     public List<String> toStrings() {
- 
-        // Dummy implementation. 
-        String[] stringArray = 
-            {"D1", "Wine",        "1",
-             "D2", "Soft drink",  "3",
-             "M1", "Fish",        "2",
-             "M2", "Veg chili",   "2"
-            };
+      //converts the Ticket to a string for printing
+        logger.fine("Entry");
+        String[] stringArray=new String[order.size()*3];
+        for (int i=0;i<stringArray.length;i+=3){
+            MenuItem item= order.get(i).getItem();
+            stringArray[i]=item.getMenuItemId().getId();
+            stringArray[i+1]=item.getDescription();
+            stringArray[i+2]=item.getPrice().toString();
+        }
         List<String> ss = new ArrayList<String>();
         ss.addAll(Arrays.asList(stringArray));
         return ss;
