@@ -103,27 +103,37 @@ public class TableDisplay extends AbstractIODevice {
 
     public void startOrder() {
         logger.fine(getInstanceName());
-        ticket = new Ticket();
+        //Check if an order is already in place
+        //We assume that no other orders can be made,
+        //until the bill of an already placed order is paid
+        assert(ticket==null):"Order already in place";
+        ticket  = new Ticket(getInstanceName());
+        //TODO: If we use ticketId uncomment below
+        //ticket = new Ticket("ti"+getInstanceName().charAt(2), getInstanceName());
+        // Takes the iString as done in the setupSystem naming convention "new TableDisplay("td" + iString)"
+        // and appends it to the string "ti" to generate the ticketId
     }
     public void showMenu() {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        assert(ticket!=null):"An order has to be initiated first";
+        displayMenu(officeOps.getMenu());
     }
     public void showTicket() {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        assert(ticket!=null):"An order has to be initiated first";
+        displayTicket(ticket);
     }
     public void addMenuItem(String menuID) {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        ticket.add(officeOps.getMenu().getItem(menuID));
     }
     public void removeMenuItem(String menuID) {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        ticket.remove(menuID);
     }
     public void submitOrder() {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        
     }
     public void payBill() {
         logger.fine(getInstanceName());

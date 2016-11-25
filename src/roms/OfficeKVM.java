@@ -92,12 +92,12 @@ public class OfficeKVM extends AbstractIODevice {
  
     public void addToMenu(String menuID, String description, Money price) {
         logger.fine(getInstanceName());
-        officeOps.addMenuItem(new MenuItem(new MenuItemId(menuID), description, price));
+        officeOps.addMenuItem(new MenuItem(menuID, description, price));
     }
 
     public void removeFromMenu(String menuID) {
         logger.fine(getInstanceName());
-        officeOps.deleteExistingItem(new MenuItemId(menuID));
+        officeOps.deleteExistingItem(menuID);
     }
 
     /*

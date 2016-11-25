@@ -18,14 +18,12 @@ public class Ticket {
     private ArrayList<OrderItem> order=new ArrayList<OrderItem>(); 
     protected static final Logger logger = Logger.getLogger("roms");
     private Money amount;
-    private TicketId id;
     private Date date;
     private String tableID;
     
 
-    public Ticket(TicketId id, String tableID) {
+    public Ticket(String tableID) {
         logger.fine("Entry");
-        this.id = id;
         amount=new Money();
         this.tableID=tableID;
     }
