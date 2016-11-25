@@ -294,7 +294,8 @@ public class SystemTest extends TestBasis {
             // Connect these objects to table-related IO objects and to other system 
             // components.
             
-                        
+            tableDisplays.get(i).setOfficeOperations(officeOperations);
+            
          }
 
         // GENERAL

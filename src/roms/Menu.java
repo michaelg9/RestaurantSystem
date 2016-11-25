@@ -57,7 +57,7 @@ public class Menu {
      *    Where the items are multiples of three and each triple 
      *    describes ID, Description, Price, in order.
      *    
-     *    @return List&lt;String&gt;
+     *    @return List&lt;String&gt - The list of the menu items;
      */
     public List<String> toStrings() {
         //converts the menu to a string for printing
@@ -65,13 +65,35 @@ public class Menu {
         String[] stringArray=new String[catalogue.size()*3];
         for (int i=0;i<stringArray.length;i+=3){
             MenuItem item= catalogue.get(i/3);
-            stringArray[i]=item.getMenuItemId().getId();
+            stringArray[i]=item.getMenuItemId();
             stringArray[i+1]=item.getDescription();
             stringArray[i+2]=item.getPrice().toString();
         }
         List<String> ss = new ArrayList<String>();
         ss.addAll(Arrays.asList(stringArray));
         return ss;
+    }
+    /**
+     *      Retrieves a menu item that corresponds to the menu item id passed
+     *      as a parameter
+     * 
+     *      @param MenuItemId - The menu item id of the item to be retrieved
+     *      @return MenuItem - The menu item that corresponds to the id passed (null if non existent)
+     */
+    public MenuItem getItem(String MenuItemId){
+        logger.fine("Entry");
+        boolean found = false;
+        MenuItem menuItem=null;
+        for(MenuItem item:catalogue){
+            if(item.getMenuItemId().equals(MenuItemId)){
+                found = true;
+                menuItem = item;
+                break;
+            }
+        }
+        assert(found):"Item not found in menu"; 
+        //In the case that the menu item id is not one of the items in the menu, then the an Assertion Error is thrown
+        return menuItem;
     }
     /**
      *      Adds a new menu item passed as a parameter, in the menu.
@@ -91,8 +113,8 @@ public class Menu {
         boolean added=false;
         for(int i=0;i<catalogue.size();i++){
             //Add the Menu Item in the correct lexicographic ordered position
-            String currentItemId=catalogue.get(i).getMenuItemId().getId();
-            String addItemId = item.getMenuItemId().getId();
+            String currentItemId=catalogue.get(i).getMenuItemId();
+            String addItemId = item.getMenuItemId();
             int comparison = currentItemId.compareTo(addItemId);
             //if item already exists, exit with appropriate error message
             assert (comparison!=0) : "Item id is conficting with existing item in the Menu";
@@ -116,7 +138,7 @@ public class Menu {
      *      
      *      @param itemId - The item id of the menu item to be deleted
      */
-    public void deleteExistingItem(MenuItemId itemId){
+    public void deleteExistingItem(String itemId){
         //precondition: item doesn't already exist in the menu
         logger.fine("Entry");
         boolean exists = false;

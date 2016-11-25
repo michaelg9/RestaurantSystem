@@ -3,12 +3,12 @@ package roms;
 import java.util.logging.Logger;
 
 public class MenuItem {
-    private MenuItemId id;
+    private String id;
     private String description;
     private Money price;
     protected static final Logger logger = Logger.getLogger("roms");
     
-    public MenuItem(MenuItemId id,String description,Money price){
+    public MenuItem(String id,String description,Money price){
         logger.fine("new MenuItem instance creation");
         //precondition: price given is non-negative
         assert (price.toString().charAt(0)!='-') : "Negative price given";
@@ -17,7 +17,7 @@ public class MenuItem {
         this.price=price;
     }
     
-    public MenuItemId getMenuItemId() {
+    public String getMenuItemId() {
         logger.fine("Entry");
         return id;
     }

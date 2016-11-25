@@ -19,7 +19,7 @@ public class OfficeOperations {
         logger.fine("Entry");
         menu.addNewItem(item);
     }
-    public void deleteExistingItem(MenuItemId itemId){
+    public void deleteExistingItem(String itemId){
         logger.fine("Entry");
         menu.deleteExistingItem(itemId);
     }
