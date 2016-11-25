@@ -14,20 +14,21 @@ import java.util.logging.Logger;
  *
  */
 public class Ticket {
-    
+    //list which holds all the ordered MenuItems
     private ArrayList<OrderItem> order=new ArrayList<OrderItem>(); 
     protected static final Logger logger = Logger.getLogger("roms");
+    //amount holds the total amount of the order
     private Money amount;
-    private TicketId id;
+    //date holds the simulated date when the order was started
     private Date date;
     private String tableID;
     
-
-    public Ticket(TicketId id, String tableID) {
+    public Ticket(String tableID) {
         logger.fine("Entry");
-        this.id = id;
+        //amount is initialised to 0
         amount=new Money();
         this.tableID=tableID;
+        date=Clock.getInstance().getDateAndTime();
     }
 
     public Money getAmount() {
@@ -38,26 +39,53 @@ public class Ticket {
         return tableID; 
     }
 
-    public void updateAmount() {
-        Money total=new Money();
-        for (OrderItem item : order){total=total.add(item.getItem().getPrice());}
-        setAmount(total);
-    }
-
+    //setAmount is only used internally to update the total amount so it's private
     private void setAmount(Money amount) {
         this.amount = amount;
-    }
-
-    public TicketId getId() {
-        return id;
     }
 
     public Date getDate() {
         return date;
     }
     
-    public void add(OrderItem item){
-        assert
+    public void add(MenuItem item){
+        boolean exists=false;
+        for (OrderItem orderItem: order){
+            if (orderItem.getItem().equals(orderItem)){
+                //item already exists in the order list, just increment the quantity
+                exists=true;
+                orderItem.incrementQuantity(1);
+                break;
+            }
+        }
+        if (!exists){
+            //if it doesn't exist, we need to put a new OrderItem in the order list
+            order.add(new OrderItem(item));
+        }
+        //update the total amount
+        setAmount(getAmount().add(item.getPrice()));
+    }
+    
+    public void remove(MenuItemId menuItemId){
+        boolean exists=false;
+        for (OrderItem orderItem: order){
+            if (orderItem.getItem().getMenuItemId().equals(menuItemId)){
+                //item exists in the order list
+                exists=true;
+                //update the total amount
+                setAmount(getAmount().add(new Money("-"+orderItem.getItem().getPrice().toString())));
+                //if the target OrderItem's quantity is just 1, remove the item from the list
+                if (orderItem.getQuantity()==1){
+                    order.remove(orderItem);
+                }else{
+                    //otherwise just decrement the quantity
+                    orderItem.incrementQuantity(-1);
+                }
+                break;
+            }
+        }
+        //if the target item doesn't exist throw an AssertionError
+        assert (!exists):"Attempt to delete non-existing item from order ticket";
     }
     
     /**

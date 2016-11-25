@@ -4,13 +4,12 @@ import java.util.logging.Logger;
 
 public class OrderItem {
     private MenuItem item;
-    private int quantity;
+    private int quantity=1;
     private int quantityReady=0;
     protected static final Logger logger = Logger.getLogger("roms");
     
-    public OrderItem(MenuItem item,int quantity){
+    public OrderItem(MenuItem item){
         this.item=item;
-        this.quantity=quantity;
     }
 
     public int getQuantityReady() {
@@ -28,5 +27,12 @@ public class OrderItem {
     public int getQuantity() {
         return quantity;
     }
+    
+    public void incrementQuantity(int quantity) {
+        this.quantity += quantity;
+    }
 
+    public boolean equal(OrderItem item){
+        return item.getItem().equals(this.getItem());
+    }
 }
