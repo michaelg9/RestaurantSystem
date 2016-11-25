@@ -280,7 +280,8 @@ public class SystemTest extends TestBasis {
         officeKVM.setOfficeOperations(officeOperations);
         
         Rack rack = new Rack();
-               
+
+        Cashier cashier = new Cashier();
         
         // TABLE-RELATED
         for (int i = 1; i <= NUM_TABLES; i++) {

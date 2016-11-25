@@ -29,6 +29,8 @@ public class CardReader extends AbstractInputDevice {
      * authorisation code from the bank server. 
      * 
      * @return an authorisation code for the payment
+     * 
+     * WRONG RETURNS CARD DETAILS!!! NOOB pbj...
      */
     public String waitForCardDetails() {
          
@@ -36,7 +38,6 @@ public class CardReader extends AbstractInputDevice {
 
         List<String> messageArgs = 
                 fetchMatchingMessage("acceptCardDetails");
-        
         return messageArgs.get(0);
     }
 }

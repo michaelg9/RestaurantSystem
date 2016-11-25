@@ -92,6 +92,7 @@ public class TableDisplay extends AbstractIODevice {
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
      */
+    //mediator class for Menu Operations
     OfficeOperations officeOps;
     public void setOfficeOperations(OfficeOperations officeOps){
         this.officeOps = officeOps;
@@ -101,6 +102,7 @@ public class TableDisplay extends AbstractIODevice {
         this.rack = rack;
     }
     Ticket ticket;
+
     String id;
     public void setId(String id){
         this.id = id;
@@ -108,6 +110,14 @@ public class TableDisplay extends AbstractIODevice {
     public String getId(){ //TODO: CHECK IF UNWANTED
         return id;
     }
+
+    
+    //mediator class for the pay bill use case
+    Cashier cashier;
+    public void setCashier(Cashier cashier){
+        this.cashier=cashier;
+    }
+    
     /*
      * SUPPORT FOR TRIGGER INPUT MESSAGES
      */
@@ -150,7 +160,11 @@ public class TableDisplay extends AbstractIODevice {
     }
     public void payBill() {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        //approveBill output event, displays that total amount to the screen for confirmation
+        Money total=ticket.getAmount();
+        displayBill(total);
+        cashier.pay(total);
+        
     }
 
     /*
