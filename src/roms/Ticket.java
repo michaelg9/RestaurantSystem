@@ -66,7 +66,7 @@ public class Ticket {
         setAmount(getAmount().add(item.getPrice()));
     }
     
-    public void remove(MenuItemId menuItemId){
+    public void remove(String menuItemId){
         boolean exists=false;
         for (OrderItem orderItem: order){
             if (orderItem.getItem().getMenuItemId().equals(menuItemId)){
@@ -115,7 +115,7 @@ public class Ticket {
         String[] stringArray=new String[order.size()*3];
         for (int i=0;i<stringArray.length;i+=3){
             MenuItem item= order.get(i).getItem();
-            stringArray[i]=item.getMenuItemId().getId();
+            stringArray[i]=item.getMenuItemId();
             stringArray[i+1]=item.getDescription();
             stringArray[i+2]=item.getPrice().toString();
         }
