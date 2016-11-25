@@ -92,14 +92,18 @@ public class TableDisplay extends AbstractIODevice {
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
      */
-
+    OfficeOperations officeOps;
+    public void setOfficeOperations(OfficeOperations officeOps){
+        this.officeOps=officeOps;
+    }
+    Ticket ticket;
     /*
      * SUPPORT FOR TRIGGER INPUT MESSAGES
      */
 
     public void startOrder() {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        ticket = new Ticket();
     }
     public void showMenu() {
         logger.fine(getInstanceName());

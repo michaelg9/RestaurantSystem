@@ -268,6 +268,11 @@ public class SystemTest extends TestBasis {
         button.setSystemCore(systemCore);
         systemCore.setPassLight(light);
         
+        OfficeOperations officeOperations = new OfficeOperations();
+        officeKVM.setOfficeOperations(officeOperations);
+        
+        //need to connect display with officeoperations
+        
         //Ticket ticket = new Ticket();
         //ticket.setTime(Clock.getInstance());
                

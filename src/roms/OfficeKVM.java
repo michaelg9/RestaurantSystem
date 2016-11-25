@@ -74,7 +74,11 @@ public class OfficeKVM extends AbstractIODevice {
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
      */
-    private OfficeOperations officeOps = new OfficeOperations();
+    private OfficeOperations officeOps;
+    
+    public void setOfficeOperations(OfficeOperations officeOps){
+        this.officeOps=officeOps;
+    }
     /*
      * SUPPORT FOR TRIGGER INPUT MESSAGES
      */
