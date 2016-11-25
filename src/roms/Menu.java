@@ -15,28 +15,11 @@ import java.util.logging.Logger;
  * Internally, it contains a list MenuItems and provides 
  * methods for modifying the Menu itself.
  * 
- *
  */
 public class Menu {
     /**
-     * Format menu as list of strings, with, per menu item, 3 strings for 
-     * respectively:
-     * - MenuID
-     * - Description
-     * - Price
-     * 
-     * Items are expected to be ordered by MenuID.
-     * 
-     * An example list is:
-     * 
-     * "D1", "Wine",        "2.50",
-     * "D2", "Soft drink",  "1.50",
-     * "M1", "Fish",        "7.95",
-     * "M2", "Veg chili",   "6.70"
-     * 
-     * These lists of strings are used by TableDisplay and TicketPrinter
-     * to produce formatted ticket output messages.
-     * 
+     *      Catalogue that holds all the Menu Items in the current Menu
+     *      in an Array List
      */
     private ArrayList<MenuItem> catalogue=new ArrayList<MenuItem>(); 
     protected static final Logger logger = Logger.getLogger("roms");
@@ -65,7 +48,7 @@ public class Menu {
         String[] stringArray=new String[catalogue.size()*3];
         for (int i=0;i<stringArray.length;i+=3){
             MenuItem item= catalogue.get(i/3);
-            stringArray[i]=item.getMenuItemId();
+            stringArray[i]=item.getId();
             stringArray[i+1]=item.getDescription();
             stringArray[i+2]=item.getPrice().toString();
         }
@@ -85,7 +68,7 @@ public class Menu {
         boolean found = false;
         MenuItem menuItem=null;
         for(MenuItem item:catalogue){
-            if(item.getMenuItemId().equals(MenuItemId)){
+            if(item.getId().equals(MenuItemId)){
                 found = true;
                 menuItem = item;
                 break;
@@ -113,8 +96,8 @@ public class Menu {
         boolean added=false;
         for(int i=0;i<catalogue.size();i++){
             //Add the Menu Item in the correct lexicographic ordered position
-            String currentItemId=catalogue.get(i).getMenuItemId();
-            String addItemId = item.getMenuItemId();
+            String currentItemId=catalogue.get(i).getId();
+            String addItemId = item.getId();
             int comparison = currentItemId.compareTo(addItemId);
             //if item already exists, exit with appropriate error message
             assert (comparison!=0) : "Item id is conficting with existing item in the Menu";
@@ -143,7 +126,7 @@ public class Menu {
         logger.fine("Entry");
         boolean exists = false;
         for (MenuItem item:catalogue){
-            if (item.getMenuItemId().equals(itemId)){
+            if (item.getId().equals(itemId)){
                 catalogue.remove(item);
                 logger.fine("Item deleted from the Menu successfully");
                 exists=true;

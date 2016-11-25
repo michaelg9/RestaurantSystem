@@ -93,17 +93,25 @@ public class SystemTest extends TestBasis {
         runAndCheck();
     }
     
- 
-    
-    @Test(expected = AssertionError.class)
-    public void addExistingItemCheck() throws AssertionError{
-        /*Check if an Assertion Error is thrown if there is
-         *  an addition of an item to the Menu with the same
-         *  MenuId of an existing item in the Menu
-         */
+    @Test
+    public void addExistingItemCheck(){
+        //Checks if an item with an already existing menu item id is updating the menu item
         logger.info(makeBanner("addToMenuOrderCheck"));
         populateMenu();
-        input("1 18:30, OfficeKVM, okvm, addToMenu, D2, Soft drink, 1.50");
+        input("1 18:30, OfficeKVM, okvm, addToMenu, D2, Soda, 2.50");
+        expect("1 19:00, OfficeKVM, okvm, viewMenu, tuples, 3, ID, Description, Price, "
+                + "D1, Wine, 2.50, "
+                + "D2, Soda, 2.50, "
+                + "M2, Veg chili, 6.70"); 
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void addNegativePriceItemCheck(){
+        //Checks if an adding item with a negative price is throwing an Assertion Error
+        logger.info(makeBanner("addToMenuOrderCheck"));
+        input("1 18:30, OfficeKVM, okvm, addToMenu, S1, Waffles, -8.50");
         
         runAndCheck();
     }
@@ -271,10 +279,7 @@ public class SystemTest extends TestBasis {
         OfficeOperations officeOperations = new OfficeOperations();
         officeKVM.setOfficeOperations(officeOperations);
         
-        //need to connect display with officeoperations
-        
-        //Ticket ticket = new Ticket();
-        //ticket.setTime(Clock.getInstance());
+        Rack rack = new Rack();
                
         
         // TABLE-RELATED
@@ -294,8 +299,12 @@ public class SystemTest extends TestBasis {
             // Connect these objects to table-related IO objects and to other system 
             // components.
             
-            tableDisplays.get(i).setOfficeOperations(officeOperations);
-            
+            //Update the connections of the table Display to the table related objects
+            int index = i-1;
+            tableDisplays.get(index).setOfficeOperations(officeOperations);
+            tableDisplays.get(index).setRack(rack);
+            tableDisplays.get(index).setId(tableID);
+            tableDisplays.get(index).setCashier(cashier);
          }
 
         // GENERAL

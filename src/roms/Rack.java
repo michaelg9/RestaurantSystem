@@ -14,7 +14,35 @@ import java.util.List;
  *
  */
 public class Rack {
-       
+    //Keeps the last Ticket number assigned during the submission of a ticket
+    private int counter = 0; 
+    //
+    private ArrayList<Ticket> orders=new ArrayList<Ticket>(); 
+    
+    
+    public int getCounter(){
+        //Returns the Ticket number to be assigned during the submission of a ticket
+        counter++; //Increment it so that the new ticket submitted takes the a new unique integer as Ticket Id
+        return counter;
+    }
+    
+    public void submitOrder(Ticket order){
+        //Each order is added at the back of the order rack
+        orders.add(order);
+    }
+    
+    public void removeOrder(int orderId){
+        boolean removed = false;
+        for(int i=0; i<orders.size();i++){
+            if(orders.get(i).getId() == orderId){
+                orders.remove(i);
+                removed = true;
+                break;
+            }
+        }
+        assert(removed):"Order to be removed not in order rack";
+        return;
+    }
     /**
      * Format rack contents as list of strings, with, per order item in each
      * order, 6 strings for respectively:
@@ -54,17 +82,20 @@ public class Rack {
      * @return
      */
     public List<String> toStrings() {
-         
-        // Dummy implementation. 
-        String[] stringArray = 
-            {"15", "1", "D1", "Wine",       "1", "0", 
-             "15", "1", "D3", "Tap water",  "2", "2",
-             "15", "1", "M1", "Fish",       "3", "0",
-             "9", "2", "D4", "Coffee",     "2", "2",
-             "9", "2", "P2", "Cake",       "2", "1" 
-            };
         List<String> ss = new ArrayList<String>();
-        ss.addAll(Arrays.asList(stringArray));
+        //Items already ordered
+        for (Ticket ticket:orders){
+            ArrayList<OrderItem> order = ticket.getOrder();
+            for (OrderItem item: order){
+                ss.add(Integer.toString(Clock.minutesBetween(ticket.getDate(), Clock.getInstance().getDateAndTime())));
+                ss.add(Integer.toString(ticket.getId()));
+                ss.add(item.getItem().getId());
+                ss.add(item.getItem().getDescription());
+                ss.add(Integer.toString(item.getQuantity()));
+                ss.add(Integer.toString(item.getQuantityReady()));
+            }
+        }       
+        
         return ss;
     }
     

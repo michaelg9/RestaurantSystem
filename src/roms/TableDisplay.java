@@ -94,9 +94,20 @@ public class TableDisplay extends AbstractIODevice {
      */
     OfficeOperations officeOps;
     public void setOfficeOperations(OfficeOperations officeOps){
-        this.officeOps=officeOps;
+        this.officeOps = officeOps;
+    }
+    Rack rack;
+    public void setRack(Rack rack){
+        this.rack = rack;
     }
     Ticket ticket;
+    String id;
+    public void setId(String id){
+        this.id = id;
+    }
+    public String getId(){ //TODO: CHECK IF UNWANTED
+        return id;
+    }
     /*
      * SUPPORT FOR TRIGGER INPUT MESSAGES
      */
@@ -106,8 +117,8 @@ public class TableDisplay extends AbstractIODevice {
         //Check if an order is already in place
         //We assume that no other orders can be made,
         //until the bill of an already placed order is paid
-        assert(ticket==null):"Order already in place";
-        ticket  = new Ticket(getInstanceName());
+        assert(ticket == null):"Order already in place";
+        ticket  = new Ticket(id);
         //TODO: If we use ticketId uncomment below
         //ticket = new Ticket("ti"+getInstanceName().charAt(2), getInstanceName());
         // Takes the iString as done in the setupSystem naming convention "new TableDisplay("td" + iString)"
@@ -115,12 +126,12 @@ public class TableDisplay extends AbstractIODevice {
     }
     public void showMenu() {
         logger.fine(getInstanceName());
-        assert(ticket!=null):"An order has to be initiated first";
+        assert(ticket != null):"An order has to be initiated first";
         displayMenu(officeOps.getMenu());
     }
     public void showTicket() {
         logger.fine(getInstanceName());
-        assert(ticket!=null):"An order has to be initiated first";
+        assert(ticket != null):"An order has to be initiated first";
         displayTicket(ticket);
     }
     public void addMenuItem(String menuID) {
@@ -133,7 +144,9 @@ public class TableDisplay extends AbstractIODevice {
     }
     public void submitOrder() {
         logger.fine(getInstanceName());
-        
+        ticket.setId(rack.getCounter());
+        ticket.setDate(Clock.getInstance().getDateAndTime());
+        rack.submitOrder(ticket);
     }
     public void payBill() {
         logger.fine(getInstanceName());

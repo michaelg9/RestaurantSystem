@@ -22,15 +22,24 @@ public class Ticket {
     //date holds the simulated date when the order was started
     private Date date;
     private String tableID;
+    private int id;
     
     public Ticket(String tableID) {
         logger.fine("Entry");
         //amount is initialised to 0
         amount=new Money();
         this.tableID=tableID;
-        date=Clock.getInstance().getDateAndTime();
     }
-
+    
+    public void setId(int id){
+        //Id is set when the ticket is submitted
+        this.id=id;
+    }
+    
+    public int getId(){
+        return id;
+    }
+    
     public Money getAmount() {
         return amount;
     }
@@ -43,9 +52,17 @@ public class Ticket {
     private void setAmount(Money amount) {
         this.amount = amount;
     }
-
+    
+    public void setDate(Date date) {
+        this.date=date;
+    }
+    
     public Date getDate() {
         return date;
+    }
+    
+    public ArrayList<OrderItem> getOrder(){
+        return order;
     }
     
     public void add(MenuItem item){
@@ -59,8 +76,26 @@ public class Ticket {
             }
         }
         if (!exists){
-            //if it doesn't exist, we need to put a new OrderItem in the order list
-            order.add(new OrderItem(item));
+            /* if it doesn't exist, we need to put a new OrderItem in the order list 
+             * in the correctly ordered position according to the menu item id
+             */
+            boolean added=false;
+            for(int i=0;i<order.size();i++){
+                String currentItemId=order.get(i).getItem().getId();
+                String addItemId = item.getId();
+                int comparison = currentItemId.compareTo(addItemId);
+                //if item already exists, exit with appropriate error message
+                if(comparison > 0){
+                    order.add(i,new OrderItem(item));
+                    added=true;
+                    logger.fine("Item added to the Order Ticket successfully");
+                    break;
+                }
+            }
+            if(!added){
+                order.add(new OrderItem(item));
+                logger.fine("Item added to the Order Ticket successfully");
+            }
         }
         //update the total amount
         setAmount(getAmount().add(item.getPrice()));
@@ -69,7 +104,7 @@ public class Ticket {
     public void remove(String menuItemId){
         boolean exists=false;
         for (OrderItem orderItem: order){
-            if (orderItem.getItem().getMenuItemId().equals(menuItemId)){
+            if (orderItem.getItem().getId().equals(menuItemId)){
                 //item exists in the order list
                 exists=true;
                 //update the total amount
@@ -110,14 +145,14 @@ public class Ticket {
      * @return
      */
     public List<String> toStrings() {
-      //converts the Ticket to a string for printing
+        //converts the Ticket to a string for printing
         logger.fine("Entry");
         String[] stringArray=new String[order.size()*3];
         for (int i=0;i<stringArray.length;i+=3){
-            MenuItem item= order.get(i).getItem();
-            stringArray[i]=item.getMenuItemId();
-            stringArray[i+1]=item.getDescription();
-            stringArray[i+2]=item.getPrice().toString();
+            OrderItem item= order.get(i);
+            stringArray[i]=item.getItem().getId();
+            stringArray[i+1]=item.getItem().getDescription();
+            stringArray[i+2]=Integer.toString(item.getQuantity());
         }
         List<String> ss = new ArrayList<String>();
         ss.addAll(Arrays.asList(stringArray));

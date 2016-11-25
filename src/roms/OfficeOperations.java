@@ -23,9 +23,5 @@ public class OfficeOperations {
         logger.fine("Entry");
         menu.deleteExistingItem(itemId);
     }
-    /*
-    public AuthorizationCode charge(CardDetails details, Money amount){
 
-    }
-    */
 }

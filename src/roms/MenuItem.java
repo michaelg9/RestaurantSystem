@@ -17,7 +17,7 @@ public class MenuItem {
         this.price=price;
     }
     
-    public String getMenuItemId() {
+    public String getId() {
         logger.fine("Entry");
         return id;
     }
