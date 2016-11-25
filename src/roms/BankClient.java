@@ -17,8 +17,6 @@ import java.util.List;
  *
  */
 public class BankClient extends AbstractIODevice {
-
-  
     
     /**
      * 
@@ -60,9 +58,7 @@ public class BankClient extends AbstractIODevice {
         return messageArgs.get(0);
     }
   
-    
-    
-    
+
     /**
      * A single method combining the above operations of requesting and 
      * checking a card.

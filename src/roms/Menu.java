@@ -116,18 +116,25 @@ public class Menu {
             String currentItemId=catalogue.get(i).getMenuItemId();
             String addItemId = item.getMenuItemId();
             int comparison = currentItemId.compareTo(addItemId);
-            //if item already exists, exit with appropriate error message
-            assert (comparison!=0) : "Item id is conficting with existing item in the Menu";
-            if(comparison > 0){
+            if (comparison==0){
+                //item already exists, updating it
+                catalogue.set(i, item);
+                added=true;
+                logger.fine("Already existing item updated in the Menu successfully");
+                break;
+            }
+            else if(comparison > 0){
+                //current item is the first greater than the current
+                //we put the new item in i and shift everything else right
                 catalogue.add(i,item);
                 added=true;
-                logger.fine("Item added to the Menu successfully");
+                logger.fine("New item added to the Menu successfully");
                 break;
             }
         }
         if(!added){
             catalogue.add(item);
-            logger.fine("Item added to the Menu successfully");
+            logger.fine("New item added to the Menu successfully");
         }
     }
     /**

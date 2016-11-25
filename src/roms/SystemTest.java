@@ -271,7 +271,9 @@ public class SystemTest extends TestBasis {
         OfficeOperations officeOperations = new OfficeOperations();
         officeKVM.setOfficeOperations(officeOperations);
         
-        //need to connect display with officeoperations
+        Cashier cashier = new Cashier();
+        
+        //need to connect display with officeOperations
         
         //Ticket ticket = new Ticket();
         //ticket.setTime(Clock.getInstance());
