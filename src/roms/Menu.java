@@ -12,10 +12,9 @@ import java.util.logging.Logger;
  * Class for Menu objects.
  * 
  * Menu objects are used to describe the menu of the restaurant.
- * Internally, it contains a list MenuItems as well as provides 
- * methods for modifying the Menu.
+ * Internally, it contains a list MenuItems and provides 
+ * methods for modifying the Menu itself.
  * 
- * @author pbj
  *
  */
 public class Menu {
@@ -38,7 +37,6 @@ public class Menu {
      * These lists of strings are used by TableDisplay and TicketPrinter
      * to produce formatted ticket output messages.
      * 
-     * @return
      */
     private ArrayList<MenuItem> catalogue=new ArrayList<MenuItem>(); 
     protected static final Logger logger = Logger.getLogger("roms");
@@ -66,7 +64,7 @@ public class Menu {
         logger.fine("Entry");
         String[] stringArray=new String[catalogue.size()*3];
         for (int i=0;i<stringArray.length;i+=3){
-            MenuItem item= catalogue.get(i);
+            MenuItem item= catalogue.get(i/3);
             stringArray[i]=item.getMenuItemId().getId();
             stringArray[i+1]=item.getDescription();
             stringArray[i+2]=item.getPrice().toString();
@@ -75,25 +73,49 @@ public class Menu {
         ss.addAll(Arrays.asList(stringArray));
         return ss;
     }
-    
+    /**
+     *      Adds a new menu item passed as a parameter, in the menu.
+     *      If the item to be added is already in the menu (determined by the menu item id),
+     *      then an Assertion Error is thrown.
+     *       
+     *      @param item - The new menu item to be added
+     */
     public void addNewItem(MenuItem item){
         //precondition: item doesn't already exist in the menu
         logger.fine("Entry");
+        if(catalogue.isEmpty()){
+            catalogue.add(item);
+            logger.fine("Item added to the Menu successfully");
+            return;
+        }
+        boolean added=false;
         for(int i=0;i<catalogue.size();i++){
             //Add the Menu Item in the correct lexicographic ordered position
             String currentItemId=catalogue.get(i).getMenuItemId().getId();
             String addItemId = item.getMenuItemId().getId();
             int comparison = currentItemId.compareTo(addItemId);
             //if item already exists, exit with appropriate error message
-            assert (comparison!=0) : "Attempt to add already existing item";
+            assert (comparison!=0) : "Item id is conficting with existing item in the Menu";
             if(comparison > 0){
                 catalogue.add(i,item);
-                logger.fine("item added to the Menu successfully");
+                added=true;
+                logger.fine("Item added to the Menu successfully");
                 break;
             }
         }
+        if(!added){
+            catalogue.add(item);
+            logger.fine("Item added to the Menu successfully");
+        }
     }
-    
+    /**
+     *      Deletes the menu item determined by the menu item id 
+     *      passed as a parameter.
+     *      If the menu item id passed is not matching a item already in the menu,
+     *      then an Assertion Error is thrown 
+     *      
+     *      @param itemId - The item id of the menu item to be deleted
+     */
     public void deleteExistingItem(MenuItemId itemId){
         //precondition: item doesn't already exist in the menu
         logger.fine("Entry");
@@ -101,12 +123,12 @@ public class Menu {
         for (MenuItem item:catalogue){
             if (item.getMenuItemId().equals(itemId)){
                 catalogue.remove(item);
-                logger.fine("item deleted from the Menu successfully");
+                logger.fine("Item deleted from the Menu successfully");
                 exists=true;
                 break;
             }
         }
         //if item already exists, exit with appropriate error message
-        assert (!exists) : "Attempt to remove non-existing item";
+        assert (exists) : "Attempt to remove nonexisting item";
     }
 }

@@ -83,6 +83,7 @@ public class OfficeKVM extends AbstractIODevice {
         logger.fine(getInstanceName());
         //Displays the current menu
         displayMenu(officeOps.getMenu());
+        
     }
  
     public void addToMenu(String menuID, String description, Money price) {
