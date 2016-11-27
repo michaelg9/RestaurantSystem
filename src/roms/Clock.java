@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * 
  * This is a singleton class.
  * 
  * The clock object holds current time, as set by the most recent input event.
@@ -132,7 +131,13 @@ public class Clock extends AbstractInputDevice {
     
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
+     * The passbutton is the trigger of the cancelReadyUpLight
+     * use case so it needs to send a message to the kitchen coordinator
      */
+    private KitchenCoordinator kitchenCoordinator;
+    public void setKitchen(KitchenCoordinator kitchenCoordinator){
+        this.kitchenCoordinator=kitchenCoordinator;
+    }
     
     /*
      * SUPPORT FOR TRIGGER INPUT MESSAGES
@@ -140,9 +145,7 @@ public class Clock extends AbstractInputDevice {
 
     public void tick() {
         logger.fine(getInstanceName());
-        
-        // TO BE COMPLETED
-        //  E.g. add calls to objects that need to be notified of ticks.
+        kitchenCoordinator.refreshOrderRack();
         
     }
     

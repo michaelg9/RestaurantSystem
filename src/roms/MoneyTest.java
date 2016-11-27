@@ -26,18 +26,18 @@ public class MoneyTest {
      * Add all your JUnit tests for the Money class below.
      */
     
+    //tests the empty constructor. 
     @Test
     public void testEmptyConstructor() {
-        //tests the empty constructor. 
         //It should return a non null object with value 0
         Money money = new Money();
         //check if empty constructor assigns the 0 value by default
         assertEquals("0.00", money.toString());
     }
     
+    //tests the constructor with string argument. 
     @Test
     public void testStringConstructor(){
-        //tests the constructor with string argument. 
         //It should return a non null object with a rounded value of the given string, rounded and appended with 
         //trailing 0s if needed
         Money money = new Money("2.78");
@@ -47,19 +47,18 @@ public class MoneyTest {
         assertEquals("2.78", money.toString());
     }
     
-    
+    //tests that the add method returns correct results
     @Test
     public void testAdd() {
-        //tests the add method
         Money money = new Money("2.15");
         Money sum=money.add(new Money("3.55"));
         //money should be 2.15+3.55=5.70
         assertEquals("5.70", sum.toString());
     }
     
+    //tests that the multiply method returns correct results
     @Test
     public void testMultiply() {
-        //tests the multiply method
         Money money = new Money("3.25");
         //multiplying with positive integer
         Money product=money.multiply(5);
@@ -75,9 +74,9 @@ public class MoneyTest {
         assertEquals("0.00", product.toString());
     }
     
+    //tests that the addPercent method returns correct results
     @Test
     public void testAddPercent() {
-        //tests the addPercent method
         Money money = new Money("100");
         //adding positive 5%
         Money result=money.addPercent(5);
@@ -93,14 +92,15 @@ public class MoneyTest {
         assertEquals("94.50", result.toString());
     }
     
+    //tests the toString method for proper results
     @Test
     public void testToString() {
-        //tests the toString method
         //Checking that the value assigned is the same as the value presented
         Money money=new Money("0.55");
         assertEquals("0.55", money.toString());
     }
     
+    //tests the toString method for proper rounding
     @Test
     public void testRounding() {
         //checking rounding to 2 decimal places when more than 2 decimal places given and 
@@ -118,6 +118,7 @@ public class MoneyTest {
         assertEquals("0.12", money.toString());
     }
     
+    //tests the toString method for proper addition of trailing zeros
     @Test
     public void testTrailingZeros() {
         //checking addition of 2 trailing 0s

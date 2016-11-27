@@ -23,12 +23,43 @@ public class Ticket {
     private Date date;
     private String tableID;
     private int id;
+    //indicates if the first menu item in the order has already been prepared
+    private boolean firstItemReady=false;
+    //indicates if all the orderItems of the Ticket are ready   
+    private boolean finished=false;
     
     public Ticket(String tableID) {
         logger.fine("Entry");
         //amount is initialised to 0
         amount=new Money();
         this.tableID=tableID;
+    }
+    
+    public boolean isFinished() {
+        return finished;
+    }
+    
+    /*
+     * called each time an item in the ticket is indicated ready
+     * checks all orderItems in the list if they are done
+     * if all of the are, it sets the finished boolean field to true
+     */
+    public void checkFinished() {
+        for (OrderItem orderItem: order){
+            if (!orderItem.isDone()){
+                finished=false;
+                return;
+            }
+        }
+        finished=true;
+    }
+
+    public boolean isFirstItemReady() {
+        return firstItemReady;
+    }
+
+    public void setFirstItemReady(boolean firstItemReady) {
+        this.firstItemReady = firstItemReady;
     }
     
     public void setId(int id){
@@ -65,6 +96,20 @@ public class Ticket {
         return order;
     }
     
+    //retrieves the orderItem with the given menuID from the order list
+    public OrderItem getOrderItem(String menuID){
+        OrderItem target=null;
+        for (OrderItem item:order){
+            if (item.getItem().getId().equals(menuID)){
+                target=item;
+                break;
+            }
+        }
+        assert (target!=null): "Attempt to retrieve a non-existing OrderItem from a ticket";
+        return target;
+    }
+    
+    //adds a new menuItem in the order list
     public void add(MenuItem item){
         boolean exists=false;
         for (OrderItem orderItem: order){
@@ -101,6 +146,7 @@ public class Ticket {
         setAmount(getAmount().add(item.getPrice()));
     }
     
+    //removes the menu item with menuItemID from the order list
     public void remove(String menuItemId){
         boolean exists=false;
         for (OrderItem orderItem: order){

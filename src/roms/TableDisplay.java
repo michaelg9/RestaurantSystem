@@ -103,14 +103,11 @@ public class TableDisplay extends AbstractIODevice {
     }
     Ticket ticket;
 
+    //id of the each table display is the table's tableID 
     String id;
     public void setId(String id){
         this.id = id;
     }
-    public String getId(){ //TODO: CHECK IF UNWANTED
-        return id;
-    }
-
     
     //mediator class for the pay bill use case
     Cashier cashier;
@@ -129,10 +126,6 @@ public class TableDisplay extends AbstractIODevice {
         //until the bill of an already placed order is paid
         assert(ticket == null):"Order already in place";
         ticket  = new Ticket(id);
-        //TODO: If we use ticketId uncomment below
-        //ticket = new Ticket("ti"+getInstanceName().charAt(2), getInstanceName());
-        // Takes the iString as done in the setupSystem naming convention "new TableDisplay("td" + iString)"
-        // and appends it to the string "ti" to generate the ticketId
     }
     public void showMenu() {
         logger.fine(getInstanceName());

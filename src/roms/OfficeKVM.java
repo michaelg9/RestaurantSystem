@@ -73,6 +73,9 @@ public class OfficeKVM extends AbstractIODevice {
     
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
+     * The office computer is the trigger for operations that
+     * need to access the menu so it needs to send messages to the 
+     * mediator class that holds the menu
      */
     private OfficeOperations officeOps;
     
