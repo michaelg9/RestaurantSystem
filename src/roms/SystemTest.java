@@ -326,7 +326,6 @@ public class SystemTest extends TestBasis {
         runAndCheck();
     }
     
-    //submit order
     @Test
     public void submitOrder(){
         /* General success scenario check of the submitOrder use case
@@ -350,6 +349,7 @@ public class SystemTest extends TestBasis {
         input("1 20:17, TableDisplay, td2, addMenuItem, M2");
         input("1 20:17, TableDisplay, td2, addMenuItem, M2");
         input("1 20:18, TableDisplay, td2, submitOrder");
+        input("1 20:20, KitchenDisplay, kd, displayRack, rack");
         
         runAndCheck();
     }
@@ -381,6 +381,7 @@ public class SystemTest extends TestBasis {
         input("1 21:33, BankClient, bc, acceptAuthorisationCode, SKAT");
         expect("1 21:33, ReceiptPrinter, rp1, takeReceipt, Total:, 27.75, AuthCode:, SKAT");
         
+        runAndCheck();
     }
     
     //start new order after paying
