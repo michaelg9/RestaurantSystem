@@ -14,7 +14,6 @@ import java.util.List;
  *
  */
 public class TicketPrinter extends AbstractOutputDevice {
-
     
     /**
      * 

@@ -51,6 +51,9 @@ public class KitchenCoordinator {
         }
         orderRack.indicateItemReady(ticketNumber, menuID);
         if (ticket.isFinished()){
+            //remove the ticket from the pending tickets list in the rack and 
+            orderRack.removeOrder(ticket.getId());
+            //switch the passlight on
             passLight.switchOn();
         }
     }
