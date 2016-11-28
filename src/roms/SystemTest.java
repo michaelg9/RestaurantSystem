@@ -381,6 +381,7 @@ public class SystemTest extends TestBasis {
         input("1 21:33, BankClient, bc, acceptAuthorisationCode, SKAT");
         expect("1 21:33, ReceiptPrinter, rp1, takeReceipt, Total:, 27.75, AuthCode:, SKAT");
         
+        runAndCheck();
     }
     
     //start new order after paying
