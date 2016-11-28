@@ -139,25 +139,30 @@ public class TableDisplay extends AbstractIODevice {
     }
     public void addMenuItem(String menuID) {
         logger.fine(getInstanceName());
+        assert(ticket != null):"An order has to be initiated first";
         ticket.add(officeOps.getMenu().getItem(menuID));
     }
     public void removeMenuItem(String menuID) {
         logger.fine(getInstanceName());
+        assert(ticket != null):"An order has to be initiated first";
         ticket.remove(menuID);
     }
     public void submitOrder() {
         logger.fine(getInstanceName());
+        assert(ticket != null):"An order has to be initiated first";
         ticket.setId(rack.getCounter());
         ticket.setDate(Clock.getInstance().getDateAndTime());
         rack.submitOrder(ticket);
     }
     public void payBill() {
         logger.fine(getInstanceName());
+        assert(ticket != null):"An order has to be initiated first";
         //approveBill output event, displays that total amount to the screen for confirmation
         Money total=ticket.getAmount();
         displayBill(total);
         cashier.pay(total);
-        
+        ticket = null;
+        logger.fine("System ready for another order");        
     }
 
     /*
@@ -199,6 +204,7 @@ public class TableDisplay extends AbstractIODevice {
     }
     
     public void displayBill(Money total) {
+        logger.fine("Entry");
         List<String> messageArgs = new ArrayList<String>();
         messageArgs.add("Total:");
         messageArgs.add(total.toString());

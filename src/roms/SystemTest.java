@@ -299,7 +299,7 @@ public class SystemTest extends TestBasis {
     @Test(expected = AssertionError.class)
     public void payBillNoOrder() throws AssertionError{
         /* Checks if an assertion error is thrown when there is an
-         * attempt to submit an order when an order has not
+         * attempt to pay the bill of an order when an order has not
          * been initialised.
          * 
          */
@@ -335,6 +335,7 @@ public class SystemTest extends TestBasis {
          * 
          */
         logger.info(makeBanner("submitOrder"));
+        populateMenu();
         input("1 20:00, TableDisplay, td1, startOrder");
         input("1 20:01, TableDisplay, td1, addMenuItem, D1");
         input("1 20:01, TableDisplay, td1, addMenuItem, M1");
@@ -349,7 +350,14 @@ public class SystemTest extends TestBasis {
         input("1 20:17, TableDisplay, td2, addMenuItem, M2");
         input("1 20:17, TableDisplay, td2, addMenuItem, M2");
         input("1 20:18, TableDisplay, td2, submitOrder");
-        input("1 20:20, KitchenDisplay, kd, displayRack, rack");
+        input("1 20:20, Clock, c, tick");
+        expect("1 20:20, KitchenDisplay, kd, viewRack, tuples, 6, "
+                + "Time, Ticket#, MenuID, Description, #Ordered, #Ready, "
+                + "16, 1, D1, Bottled Water, 3, 0, "
+                + "16, 1, M1, Cheese burger, 2, 0, "
+                + "16, 1, M2, Ceasar salad, 1, 0, "
+                + "2, 2, D2, Beer, 2, 0, "
+                + "2, 2, M2, Ceasar salad, 2, 0");
         
         runAndCheck();
     }
@@ -385,6 +393,40 @@ public class SystemTest extends TestBasis {
     }
     
     //start new order after paying
+    @Test
+    public void startSecondOrder(){
+        /* Check if the user is allowed to start another order after the 
+         * previous one is finished (paid)
+         * 
+         */
+        logger.info(makeBanner("startSecondOrder"));
+        populateMenu();
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M2");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D2");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D2");
+        input("1 20:02, TableDisplay, td1, submitOrder");
+        
+        input("1 21:30, TableDisplay, td1, payBill");
+        expect("1 21:30, TableDisplay, td1, approveBill, Total:, 26.85");
+        
+        input("1 21:32, CardReader, cr1, acceptCardDetails, MIHPWNED");
+        expect("1 21:32, BankClient, bc, makePayment, MIHPWNED, 26.85");
+        
+        input("1 21:33, BankClient, bc, acceptAuthorisationCode, ATED");
+        expect("1 21:33, ReceiptPrinter, rp1, takeReceipt, Total:, 26.85, AuthCode:, ATED");
+        //Previous order has finished (been paid)
+        
+        input("1 20:35, TableDisplay, td1, startOrder"); //New order (same table)
+        input("1 20:36, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:38, TableDisplay, td1, showTicket");
+        expect("1 20:38, TableDisplay, td1, viewTicket, tuples, 3, "
+                + "ID, Description, Count, "
+                + "M1, Cheese burger, 1");
+        
+        runAndCheck();
+    }
     
    /*
     * Put all your JUnit system-level tests above.
