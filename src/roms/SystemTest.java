@@ -804,7 +804,7 @@ public class SystemTest extends TestBasis {
             //Update the connections of the table Display to the table related objects
             int index = i-1;
             tableDisplays.get(index).setOfficeOperations(officeOperations);
-            tableDisplays.get(index).setRack(rack);
+            tableDisplays.get(index).setKitchenCoordinator(kitchenCoordinator);
             tableDisplays.get(index).setId(tableID);
             
             tableDisplays.get(index).getCashier().setCardReader(cardReaders.get(index));
