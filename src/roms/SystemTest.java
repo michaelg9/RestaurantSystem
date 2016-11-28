@@ -523,20 +523,23 @@ public class SystemTest extends TestBasis {
          * and connecting them to the interface device objects.
          */
 
-        // SYSTEM CORE
-        // Create systemCore object and links between it and IO devices.
+        Rack rack = new Rack();
+
+        // Create KitchenCoordinator object and links between it and IO devices.
         
         KitchenCoordinator kitchenCoordinator = new KitchenCoordinator();
-       
+        Clock.getInstance().setKitchenCoordinator(kitchenCoordinator);
         button.setKitchenCoordinator(kitchenCoordinator);
+        display.setKitchenCoordinator(kitchenCoordinator);
         kitchenCoordinator.setPassLight(light);
+        kitchenCoordinator.setKitchenDisplay(display);
+        kitchenCoordinator.setOrderRack(rack);
+        kitchenCoordinator.setTicketPrinter(printer);
+        
         
         OfficeOperations officeOperations = new OfficeOperations();
         officeKVM.setOfficeOperations(officeOperations);
-        
-        Rack rack = new Rack();
-
-        Cashier cashier = new Cashier();
+                
         
         // TABLE-RELATED
         for (int i = 1; i <= NUM_TABLES; i++) {
@@ -560,7 +563,11 @@ public class SystemTest extends TestBasis {
             tableDisplays.get(index).setOfficeOperations(officeOperations);
             tableDisplays.get(index).setRack(rack);
             tableDisplays.get(index).setId(tableID);
-            tableDisplays.get(index).setCashier(cashier);
+            
+            tableDisplays.get(index).getCashier().setCardReader(cardReaders.get(index));
+            tableDisplays.get(index).getCashier().setReceiptPrinter(receiptPrinters.get(index));
+            tableDisplays.get(index).getCashier().setBankClient(bankClient);
+            
          }
 
         // GENERAL

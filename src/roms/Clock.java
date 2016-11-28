@@ -135,7 +135,7 @@ public class Clock extends AbstractInputDevice {
      * use case so it needs to send a message to the kitchen coordinator
      */
     private KitchenCoordinator kitchenCoordinator;
-    public void setKitchen(KitchenCoordinator kitchenCoordinator){
+    public void setKitchenCoordinator(KitchenCoordinator kitchenCoordinator){
         this.kitchenCoordinator=kitchenCoordinator;
     }
     

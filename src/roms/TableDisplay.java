@@ -95,12 +95,10 @@ public class TableDisplay extends AbstractIODevice {
     //mediator class for Menu Operations
     OfficeOperations officeOps;
     public void setOfficeOperations(OfficeOperations officeOps){
-        logger.fine("Entry");
         this.officeOps = officeOps;
     }
     Rack rack;
     public void setRack(Rack rack){
-        logger.fine("Entry");
         this.rack = rack;
     }
     Ticket ticket;
@@ -108,15 +106,13 @@ public class TableDisplay extends AbstractIODevice {
     //id of the each table display is the table's tableID 
     String id;
     public void setId(String id){
-        logger.fine("Entry");
         this.id = id;
     }
     
     //mediator class for the pay bill use case
-    Cashier cashier;
-    public void setCashier(Cashier cashier){
-        logger.fine("Entry");
-        this.cashier=cashier;
+    Cashier cashier = new Cashier();
+    public Cashier getCashier(){
+        return cashier;
     }
     
     /*
@@ -129,7 +125,6 @@ public class TableDisplay extends AbstractIODevice {
         //We assume that no other orders can be made,
         //until the bill of an already placed order is paid
         assert(ticket == null):"Order already in place";
-        assert(id != null):"Table Display not assigned an id";
         ticket  = new Ticket(id);
     }
     public void showMenu() {
@@ -144,30 +139,25 @@ public class TableDisplay extends AbstractIODevice {
     }
     public void addMenuItem(String menuID) {
         logger.fine(getInstanceName());
-        assert(ticket != null):"An order has to be initiated first";
         ticket.add(officeOps.getMenu().getItem(menuID));
     }
     public void removeMenuItem(String menuID) {
         logger.fine(getInstanceName());
-        assert(ticket != null):"An order has to be initiated first";
         ticket.remove(menuID);
     }
     public void submitOrder() {
         logger.fine(getInstanceName());
-        assert(ticket != null):"An order has to be initiated first";
         ticket.setId(rack.getCounter());
         ticket.setDate(Clock.getInstance().getDateAndTime());
         rack.submitOrder(ticket);
     }
     public void payBill() {
         logger.fine(getInstanceName());
-        assert(ticket != null):"An order has to be initiated first";
         //approveBill output event, displays that total amount to the screen for confirmation
         Money total=ticket.getAmount();
         displayBill(total);
         cashier.pay(total);
-        ticket = null;
-        logger.fine("System ready for another order");        
+        
     }
 
     /*
@@ -209,7 +199,6 @@ public class TableDisplay extends AbstractIODevice {
     }
     
     public void displayBill(Money total) {
-        logger.fine("Entry");
         List<String> messageArgs = new ArrayList<String>();
         messageArgs.add("Total:");
         messageArgs.add(total.toString());

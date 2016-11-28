@@ -65,7 +65,7 @@ public class KitchenDisplay extends AbstractIODevice {
      * it the appropriate message
      */
     private KitchenCoordinator kitchenCoordinator;
-    public void setKitchen(KitchenCoordinator kitchenCoordinator){
+    public void setKitchenCoordinator(KitchenCoordinator kitchenCoordinator){
         this.kitchenCoordinator=kitchenCoordinator;
     }
     
