@@ -22,7 +22,7 @@ public class Ticket {
     //date holds the simulated date when the order was started
     private Date date;
     private String tableID;
-    private int id;
+    private int id = 0;
     //indicates if the first menu item in the order has already been prepared
     private boolean firstItemReady=false;
     //indicates if all the orderItems of the Ticket are ready   
@@ -36,6 +36,14 @@ public class Ticket {
     }
     
     public boolean isFinished() {
+        logger.fine("Entry");
+        finished=true;
+        for (OrderItem orderItem: order){
+            if (!orderItem.isDone()){
+                finished=false;
+            }
+        }
+        
         return finished;
     }
     
@@ -44,68 +52,56 @@ public class Ticket {
      * checks all orderItems in the list if they are done
      * if all of the are, it sets the finished boolean field to true
      */
-    public void checkFinished() {
-        for (OrderItem orderItem: order){
-            if (!orderItem.isDone()){
-                finished=false;
-                return;
-            }
-        }
-        finished=true;
-    }
 
     public boolean isFirstItemReady() {
         return firstItemReady;
     }
 
-    public void setFirstItemReady(boolean firstItemReady) {
-        this.firstItemReady = firstItemReady;
+    public void setFirstItemReady() {
+        this.firstItemReady = true;
     }
     
     public void setId(int id){
         //Id is set when the ticket is submitted
-        logger.fine("Entry");
         this.id=id;
     }
     
     public int getId(){
-        logger.fine("Entry");
+        /*Check that id is greater than 0 because id is initialised as 0 and 
+         * then when the order is submitted id is changed to a greater value
+         */
+        assert(id >0):"Order not yet submitted";
         return id;
     }
     
     public Money getAmount() {
-        logger.fine("Entry");
         return amount;
     }
     
     public String getTableID() { 
-        logger.fine("Entry");
         return tableID; 
     }
 
     //setAmount is only used internally to update the total amount so it's private
     private void setAmount(Money amount) {
-        logger.fine("Entry");
         this.amount = amount;
     }
     
     public void setDate(Date date) {
-        logger.fine("Entry");
         this.date=date;
     }
     
     public Date getDate() {
-        logger.fine("Entry");
         return date;
     }
     
     public ArrayList<OrderItem> getOrder(){
-        logger.fine("Entry");
         return order;
     }
     
     //retrieves the orderItem with the given menuID from the order list
     public OrderItem getOrderItem(String menuID){
+        logger.fine("Entry");
         OrderItem target=null;
         for (OrderItem item:order){
             if (item.getItem().getId().equals(menuID)){

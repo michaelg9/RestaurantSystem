@@ -45,7 +45,7 @@ public class SystemTest extends TestBasis {
         //Populates the Menu with some default items
         input("1 18:00, OfficeKVM, okvm, addToMenu, D1, Bottled Water, 1.00");
         input("1 18:00, OfficeKVM, okvm, addToMenu, D2, Beer, 4.50");
-        input("1 12:00, OfficeKVM, okvm, addToMenu, M1, Cheese burger, 9.95");
+        input("1 18:00, OfficeKVM, okvm, addToMenu, M1, Cheese burger, 9.95");
         input("1 18:00, OfficeKVM, okvm, addToMenu, M2, Ceasar salad, 7.90");
     }
     
@@ -132,7 +132,7 @@ public class SystemTest extends TestBasis {
         
         runAndCheck();
     }
-
+    
     @Test
     public void addShowTicket(){
         /* General success scenario check of the showTicket use case
@@ -327,44 +327,8 @@ public class SystemTest extends TestBasis {
     }
     
     @Test
-    public void submitOrder(){
-        /* General success scenario check of the submitOrder use case
-         * Checks if the items are ordered by their Id
-         * Checks if items in order tickets are displayed correctly, 
-         * and ordered by ticket number and then by menu item id
-         * 
-         */
-        logger.info(makeBanner("submitOrder"));
-        populateMenu();
-        input("1 20:00, TableDisplay, td1, startOrder");
-        input("1 20:01, TableDisplay, td1, addMenuItem, D1");
-        input("1 20:01, TableDisplay, td1, addMenuItem, M1");
-        input("1 20:01, TableDisplay, td1, addMenuItem, M2");
-        input("1 20:02, TableDisplay, td1, addMenuItem, D1");
-        input("1 20:02, TableDisplay, td1, addMenuItem, D1");
-        input("1 20:03, TableDisplay, td1, addMenuItem, M1");
-        input("1 20:04, TableDisplay, td1, submitOrder");
-        input("1 20:15, TableDisplay, td2, startOrder");
-        input("1 20:16, TableDisplay, td2, addMenuItem, D2");
-        input("1 20:16, TableDisplay, td2, addMenuItem, D2");
-        input("1 20:17, TableDisplay, td2, addMenuItem, M2");
-        input("1 20:17, TableDisplay, td2, addMenuItem, M2");
-        input("1 20:18, TableDisplay, td2, submitOrder");
-        input("1 20:20, Clock, c, tick");
-        expect("1 20:20, KitchenDisplay, kd, viewRack, tuples, 6, "
-                + "Time, Ticket#, MenuID, Description, #Ordered, #Ready, "
-                + "16, 1, D1, Bottled Water, 3, 0, "
-                + "16, 1, M1, Cheese burger, 2, 0, "
-                + "16, 1, M2, Ceasar salad, 1, 0, "
-                + "2, 2, D2, Beer, 2, 0, "
-                + "2, 2, M2, Ceasar salad, 2, 0");
-        
-        runAndCheck();
-    }
-    
-    @Test
     public void addTicketPayBill(){
-        /* General success scenario check of the addTicketPayBill use case
+        /* General success scenario check of the SubmitOrder and PayBill use case
          * Checks if the total is calculated correctly from the given quantities of the items
          * 
          */
@@ -383,8 +347,8 @@ public class SystemTest extends TestBasis {
         input("1 21:30, TableDisplay, td1, payBill");
         expect("1 21:30, TableDisplay, td1, approveBill, Total:, 27.75");
         
-        input("1 21:32, CardReader, cr1, acceptCardDetails, STE1337");
-        expect("1 21:32, BankClient, bc, makePayment, STE1337, 27.75");
+        input("1 21:32, CardReader, cr1, acceptCardDetails, S13TE37");
+        expect("1 21:32, BankClient, bc, makePayment, S13TE37, 27.75");
         
         input("1 21:33, BankClient, bc, acceptAuthorisationCode, SKAT");
         expect("1 21:33, ReceiptPrinter, rp1, takeReceipt, Total:, 27.75, AuthCode:, SKAT");
@@ -418,7 +382,7 @@ public class SystemTest extends TestBasis {
         expect("1 21:33, ReceiptPrinter, rp1, takeReceipt, Total:, 26.85, AuthCode:, ATED");
         //Previous order has finished (been paid)
         
-        input("1 20:35, TableDisplay, td1, startOrder"); //New order (same table)
+        input("1 20:35, TableDisplay, td1, startOrder"); //New order (same table)0
         input("1 20:36, TableDisplay, td1, addMenuItem, M1");
         input("1 20:38, TableDisplay, td1, showTicket");
         expect("1 20:38, TableDisplay, td1, viewTicket, tuples, 3, "
@@ -427,6 +391,242 @@ public class SystemTest extends TestBasis {
         
         runAndCheck();
     }
+    
+    @Test
+    public void showRack(){
+        /* General success scenario check of the SubmitOrder and ShowRack use case
+         * Checks if the orders are submitted correctly in the order rack
+         * Checks if the items are ordered by their time, 
+         * then by the ticket number and finally by the menu item id
+         * 
+         */
+        logger.info(makeBanner("showRack"));
+        populateMenu();
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M2");
+        input("1 20:02, TableDisplay, td1, addMenuItem, D1");
+        input("1 20:02, TableDisplay, td1, addMenuItem, D1");
+        input("1 20:03, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:04, TableDisplay, td1, submitOrder"); //Order submitted first => Ticket#:1
+        input("1 20:15, TableDisplay, td2, startOrder");
+        input("1 20:16, TableDisplay, td2, addMenuItem, D2");
+        input("1 20:16, TableDisplay, td2, addMenuItem, D2");
+        input("1 20:17, TableDisplay, td2, addMenuItem, M2");
+        input("1 20:17, TableDisplay, td2, addMenuItem, M2");
+        input("1 20:18, TableDisplay, td2, submitOrder"); //Order submitted second => Ticket#:2
+        input("1 20:20, Clock, c, tick");
+        expect("1 20:20, KitchenDisplay, kd, viewRack, tuples, 6, "
+                + "Time, Ticket#, MenuID, Description, #Ordered, #Ready, "
+                + "16, 1, D1, Bottled Water, 3, 0, " 
+                + "16, 1, M1, Cheese burger, 2, 0, "
+                + "16, 1, M2, Ceasar salad, 1, 0, "
+                + "2, 2, D2, Beer, 2, 0, "
+                + "2, 2, M2, Ceasar salad, 2, 0");
+        
+        runAndCheck();
+    }
+    
+    public void populateRack(){
+        //Populates the rack with some default order tickets
+        populateMenu();
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D2");
+        input("1 20:02, TableDisplay, td1, addMenuItem, M2");
+        input("1 20:02, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:02, TableDisplay, td1, addMenuItem, D1");
+        input("1 20:03, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:04, TableDisplay, td1, submitOrder");
+        input("1 20:10, TableDisplay, td2, startOrder");
+        input("1 20:11, TableDisplay, td2, addMenuItem, D2");
+        input("1 20:11, TableDisplay, td2, addMenuItem, D2");
+        input("1 20:12, TableDisplay, td2, addMenuItem, M2");
+        input("1 20:13, TableDisplay, td2, addMenuItem, M2");
+        input("1 20:14, TableDisplay, td2, submitOrder");
+    }
+    
+    //Maybe add a general indicateItemReady() test
+    
+    @Test
+    public void indicateFirstItemReady(){
+        /* Checks if a takeTicket output event is made when the first item 
+         * of an order is indicated as finished
+         * Also check if the quantity ready is incremented correctly
+         */
+        logger.info(makeBanner("indicateFirstItemReady"));
+        populateRack();
+        input("1 20:30, KitchenDisplay, kd, itemReady, 1, D1");
+        expect("1 20:30, TicketPrinter, tp, takeTicket, tuples, 3, "
+                + "Table:, Tab-1, _, "
+                + "ID, Description, Count, "
+                + "D1, Bottled Water, 2, "
+                + "D2, Beer, 1, "
+                + "M1, Cheese burger, 2, "
+                + "M2,  Ceasar salad, 1");
+        
+        
+        input("1 20:30, KitchenDisplay, kd, itemReady, 2, D2");
+        expect("1 20:30, TicketPrinter, tp, takeTicket, tuples, 3, "
+                + "Table:, Tab-2, _, "
+                + "ID, Description, Count, "
+                + "D2, Beer, 2, "
+                + "M2,  Ceasar salad, 2");
+        
+        input("1 20:31, Clock, c, tick");
+        expect("1 20:31, KitchenDisplay, kd, viewRack, tuples, 6, "
+                + "Time, Ticket#, MenuID, Description, #Ordered, #Ready,"
+                + "27, 1, D1, Bottled Water, 2, 1, "
+                + "27, 1, D2, Beer, 1, 0, "
+                + "27, 1, M1, Cheese burger, 2, 0, "
+                + "27, 1, M2, Ceasar salad, 1, 0, "
+                + "17, 2, D2, Beer, 2, 1, "
+                + "17, 2, M2, Ceasar salad, 2, 0");
+        
+        runAndCheck();
+    }
+    
+    @Test
+    public void indicateOrderReady(){
+        /* Checks that when a whole order is indicated as ready (thus is finished),
+         * is removed from the rack and the pass light is switched on
+         * 
+         */
+        logger.info(makeBanner("indicateOrderReady"));
+        populateRack();
+        input("1 20:30, KitchenDisplay, kd, itemReady, 1, D1");
+        expect("1 20:30, TicketPrinter, tp, takeTicket, tuples, 3, "
+                + "Table:, Tab-1, _, "
+                + "ID, Description, Count, "
+                + "D1, Bottled Water, 2, "
+                + "D2, Beer, 1, "
+                + "M1, Cheese burger, 2, "
+                + "M2,  Ceasar salad, 1");
+        
+        input("1 20:30, KitchenDisplay, kd, itemReady, 1, D1");
+        input("1 20:35, KitchenDisplay, kd, itemReady, 1, D2");
+        input("1 20:36, KitchenDisplay, kd, itemReady, 1, M1");
+        input("1 20:37, KitchenDisplay, kd, itemReady, 1, M1");
+        //input("1 20:40, KitchenDisplay, kd, itemReady, 1, D1");
+        input("1 20:40, KitchenDisplay, kd, itemReady, 1, M2"); //All items of order 1 finished
+        expect("1 20:40, PassLight, pl, viewSwitchedOn");
+        
+        input("1 20:41, Clock, c, tick");
+        expect("1 20:41, KitchenDisplay, kd, viewRack, tuples, 6, "
+                + "Time, Ticket#, MenuID, Description, #Ordered, #Ready,"
+                + "27, 2, D2, Beer, 2, 0, " //First order is removed from the rack
+                + "27, 2, M2, Ceasar salad, 2, 0");
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void moreItemsReady() throws AssertionError{
+        /* Checks if an AssertionError is throw if an item is indicated 
+         * ready when the quantity ordered has been reached
+         * 
+         */
+        logger.info(makeBanner("moreItemsReady"));
+        populateRack();
+        input("1 20:30, KitchenDisplay, kd, itemReady, 1, D1");
+        expect("1 20:30, TicketPrinter, tp, takeTicket, tuples, 3, "
+                + "Table:, Tab-1, _, "
+                + "ID, Description, Count, "
+                + "D1, Bottled Water, 2, "
+                + "D2, Beer, 1, "
+                + "M1, Cheese burger, 2, "
+                + "M2,  Ceasar salad, 1");
+        
+        input("1 20:30, KitchenDisplay, kd, itemReady, 1, D1");
+        //Note the order has quantity only 2 of items with id D1
+        input("1 20:30, KitchenDisplay, kd, itemReady, 1, D1");
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void indicateUnknownItemReady() throws AssertionError{
+        /* Checks if an AssertionError is throw if an item is indicated 
+         * ready and its not included in the order ticket indicated  
+         * 
+         */
+        logger.info(makeBanner("indicateUnknownItemReady"));
+        populateRack();
+        input("1 20:30, KitchenDisplay, kd, itemReady, 2, D1"); //menu item with Id D1 is not in the order with id 2
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void indicateUnknownTicket() throws AssertionError{
+        /* Checks if an AssertionError is throw if an item is indicated 
+         * ready and its order ticket is not included in the rack
+         * 
+         */
+        logger.info(makeBanner("indicateUnknownTicket"));
+        populateRack();
+        input("1 20:30, KitchenDisplay, kd, itemReady, 15, D1"); //order with id 15 is not in the rack
+        
+        runAndCheck();
+    }
+    
+    @Test
+    public void generalTest(){
+        /* A general check that goes through all the use case, 
+         * as it's going to be used in the restaurant
+         */
+        logger.info(makeBanner("generalTest"));
+        //First the menu has to be populated with some items
+        input("1 18:00, OfficeKVM, okvm, addToMenu, D1, Bottled Water, 1.00");
+        input("1 18:01, OfficeKVM, okvm, addToMenu, D2, Beer, 4.50");
+        input("1 18:02, OfficeKVM, okvm, addToMenu, D3, Ouzo, 3.00");
+        input("1 18:03, OfficeKVM, okvm, addToMenu, D4, Wine, 5.00");
+        input("1 18:04, OfficeKVM, okvm, addToMenu, D5, Soda, 2.50");
+        input("1 18:05, OfficeKVM, okvm, addToMenu, M1, Cheese burger, 9.95");
+        input("1 18:06, OfficeKVM, okvm, addToMenu, M2, Ceasar salad, 7.90");
+        input("1 18:06, OfficeKVM, okvm, addToMenu, M3, Hunter's Chicken, 7.50");
+        input("1 18:07, OfficeKVM, okvm, addToMenu, M4, Haggis neeps and tatties, 8.50");
+        input("1 18:07, OfficeKVM, okvm, addToMenu, M5, Greek Gyros, 8.00");
+        //Update wine price
+        input("1 18:08, OfficeKVM, okvm, addToMenu, D4, Wine, 4.00"); 
+        
+        //Table 2 starts order
+        input("1 20:00, TableDisplay, td1, startOrder"); 
+        input("1 20:01, TableDisplay, td1, addMenuItem, M4");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M4");
+        input("1 20:02, TableDisplay, td1, addMenuItem, D1");
+        //Table 1 starts order
+        input("1 20:03, TableDisplay, td2, startOrder"); 
+        input("1 20:03, TableDisplay, td2, addMenuItem, M2");
+        
+        input("1 20:03, TableDisplay, td1, addMenuItem, M1");
+        
+        input("1 20:04, TableDisplay, td2, addMenuItem, M1");
+        //Table 2 wants to preview its order ticket before submitting its order
+        input("1 20:04, TableDisplay, td2, showTicket");
+        expect("1 20:04, TableDisplay, td2, viewTicket, tuples, 3, "
+                + "ID, Description, Count, "
+                + "M1, Cheese burger, 1, "
+                + "M2, Ceasar salad, 1");
+        //Table 2 submitted its order
+        input("1 20:05, TableDisplay, td2, submitOrder"); 
+        //Clock tick
+        //Table 1 previews its order ticket
+        //Table 1 removes M1 from order
+        //Table 1 submits order
+        //Clock tick
+        //Chef indicates that the first item of the first order is ready
+        //Other items ready
+        //Chef indicates that the first item of the second order is ready
+        //Other items ready
+        //First order (table 2) is ready
+        //Other items ready
+        //No orders ready so waiter closes pass light
+        //Second order (table 1) is ready
+        //Table 2 wants to pay its bill
+        runAndCheck();
+    }
+    
     
    /*
     * Put all your JUnit system-level tests above.

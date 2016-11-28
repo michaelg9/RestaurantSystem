@@ -15,12 +15,11 @@ public class OrderItem {
     protected static final Logger logger = Logger.getLogger("roms");
     
     public OrderItem(MenuItem item){
-        logger.fine("Entry");
+        logger.fine("New Order item for the ticket created");
         this.item=item;
     }
 
     public int getQuantityReady() {
-        logger.fine("Entry");
         return quantityReady;
     }
     //returns true if the the specific order item has been prepared in the kitchen
@@ -31,23 +30,22 @@ public class OrderItem {
     public void incrementQuantityReady() {
         logger.fine("Entry");
         //quantity ready should always be less than or equal to the quantity ordered
-        assert (quantityReady<=quantity): "Quantity prepared cannot be greater than ordered quantity";
         quantityReady++;
+        assert (quantityReady<=quantity): "Quantity prepared cannot be greater than ordered quantity";
+        logger.fine("Ready quantity of item incremented");
     }
 
     public MenuItem getItem() {
-        logger.fine("Entry");
         return item;
     }
     
     public int getQuantity() {
-        logger.fine("Entry");
         return quantity;
     }
     
     public void incrementQuantity(int quantity) {
-        logger.fine("Entry");
         this.quantity += quantity;
+        logger.fine("Quantity of item incremented");
     }
 
     public boolean equals(OrderItem item){

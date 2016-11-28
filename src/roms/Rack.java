@@ -50,17 +50,18 @@ public class Rack {
     }
     
     public void indicateItemReady(int ticketNumber, String menuID){
+        logger.fine("Entry");
         Ticket targetTicket=getTicket(ticketNumber);
         OrderItem targetOrderItem=targetTicket.getOrderItem(menuID);
-        assert (targetOrderItem!=null) : "Indicate item ready on a non-existing menu item";
         targetOrderItem.incrementQuantityReady();
         if (!targetTicket.isFirstItemReady()){
-            targetTicket.setFirstItemReady(true);
+            logger.fine("First item of an order ticket ready");
+            targetTicket.setFirstItemReady();
         }
-        targetTicket.checkFinished();
     }
     
     public Ticket getTicket(int ticketNumber){
+        logger.fine("Entry");
         Ticket targetTicket=null;
         for (Ticket ticket: orders){
             if (ticket.getId()==ticketNumber){

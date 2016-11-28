@@ -47,6 +47,7 @@ public class KitchenCoordinator {
     public void indicateItemReady(int ticketNumber, String menuID){
         Ticket ticket=orderRack.getTicket(ticketNumber);
         if (!ticket.isFirstItemReady()){
+            //No items have been indicated ready yet, thus the order ticket has to be printed
             ticketPrinter.printTicket(ticket);
         }
         orderRack.indicateItemReady(ticketNumber, menuID);
