@@ -526,10 +526,10 @@ public class SystemTest extends TestBasis {
         // SYSTEM CORE
         // Create systemCore object and links between it and IO devices.
         
-        SystemCore systemCore = new SystemCore();
+        KitchenCoordinator kitchenCoordinator = new KitchenCoordinator();
        
-        button.setSystemCore(systemCore);
-        systemCore.setPassLight(light);
+        button.setKitchenCoordinator(kitchenCoordinator);
+        kitchenCoordinator.setPassLight(light);
         
         OfficeOperations officeOperations = new OfficeOperations();
         officeKVM.setOfficeOperations(officeOperations);

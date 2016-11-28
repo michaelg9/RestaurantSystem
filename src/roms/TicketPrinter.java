@@ -40,7 +40,7 @@ public class TicketPrinter extends AbstractOutputDevice {
         messageArgs.addAll(Arrays.asList(preludeArgs2));
         messageArgs.addAll(ticket.toStrings());
         sendMessage("takeTicket", messageArgs);
-      
+        
     }
 
 

@@ -48,6 +48,29 @@ public class Rack {
         assert(removed):"Order to be removed not in order rack";
         return;
     }
+    
+    public void indicateItemReady(int ticketNumber, String menuID){
+        Ticket targetTicket=getTicket(ticketNumber);
+        OrderItem targetOrderItem=targetTicket.getOrderItem(menuID);
+        assert (targetOrderItem!=null) : "Indicate item ready on a non-existing menu item";
+        targetOrderItem.incrementQuantityReady();
+        if (!targetTicket.isFirstItemReady()){
+            targetTicket.setFirstItemReady(true);
+        }
+        targetTicket.checkFinished();
+    }
+    
+    public Ticket getTicket(int ticketNumber){
+        Ticket targetTicket=null;
+        for (Ticket ticket: orders){
+            if (ticket.getId()==ticketNumber){
+                targetTicket=ticket;
+                break;
+            }
+        }
+        assert (targetTicket!=null) : "Indicate item ready on a non-existing ticket";
+        return targetTicket;
+    }
     /**
      * Format rack contents as list of strings, with, per order item in each
      * order, 6 strings for respectively:

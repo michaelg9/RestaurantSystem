@@ -105,16 +105,12 @@ public class TableDisplay extends AbstractIODevice {
     }
     Ticket ticket;
 
+    //id of the each table display is the table's tableID 
     String id;
     public void setId(String id){
         logger.fine("Entry");
         this.id = id;
     }
-    public String getId(){ //TODO: CHECK IF UNWANTED
-        logger.fine("Entry");
-        return id;
-    }
-
     
     //mediator class for the pay bill use case
     Cashier cashier;
@@ -135,7 +131,6 @@ public class TableDisplay extends AbstractIODevice {
         assert(ticket == null):"Order already in place";
         assert(id != null):"Table Display not assigned an id";
         ticket  = new Ticket(id);
-
     }
     public void showMenu() {
         logger.fine(getInstanceName());

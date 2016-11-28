@@ -60,15 +60,22 @@ public class KitchenDisplay extends AbstractIODevice {
 
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
+     * Kitchen display is the trigger of the indicate item ready use case
+     * it needs the kitchen coordinator as an attribute because it sends
+     * it the appropriate message
      */
-        
+    private KitchenCoordinator kitchenCoordinator;
+    public void setKitchen(KitchenCoordinator kitchenCoordinator){
+        this.kitchenCoordinator=kitchenCoordinator;
+    }
+    
     /*
      * SUPPORT FOR TRIGGER INPUT MESSAGES
      */
 
     public void itemReady(int ticketNumber, String menuID) {
         logger.fine(getInstanceName());
-        // TO BE COMPLETED
+        kitchenCoordinator.indicateItemReady(ticketNumber, menuID);
     }
 
     /*
