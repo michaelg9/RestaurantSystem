@@ -43,9 +43,10 @@ public class SystemTest extends TestBasis {
     
     private void populateMenu(){
         //Populates the Menu with some default items
-        input("1 18:00, OfficeKVM, okvm, addToMenu, D1, Wine, 2.50");
-        input("1 18:00, OfficeKVM, okvm, addToMenu, D2, Soft drink, 1.50");
-        input("1 18:00, OfficeKVM, okvm, addToMenu, M2, Veg chili, 6.70");
+        input("1 18:00, OfficeKVM, okvm, addToMenu, D1, Bottled Water, 1.00");
+        input("1 18:00, OfficeKVM, okvm, addToMenu, D2, Beer, 4.50");
+        input("1 12:00, OfficeKVM, okvm, addToMenu, M1, Cheese burger, 9.95");
+        input("1 18:00, OfficeKVM, okvm, addToMenu, M2, Ceasar salad, 7.90");
     }
     
     @Test
@@ -55,9 +56,10 @@ public class SystemTest extends TestBasis {
         populateMenu();
         input("1 19:00, OfficeKVM, okvm, showMenu"); 
         expect("1 19:00, OfficeKVM, okvm, viewMenu, tuples, 3, ID, Description, Price, "
-                + "D1, Wine, 2.50, "
-                + "D2, Soft drink, 1.50, "
-                + "M2, Veg chili, 6.70"); 
+                + "D1, Bottled Water, 1.00, "
+                + "D2, Beer, 4.50, "
+                + "M1, Cheese burger, 9.95, "
+                + "M2, Ceasar salad, 7.90"); 
         
         runAndCheck();
     }
@@ -70,8 +72,9 @@ public class SystemTest extends TestBasis {
         input("1 18:00, OfficeKVM, okvm, removeFromMenu, D2");
         input("1 19:00, OfficeKVM, okvm, showMenu"); 
         expect("1 19:00, OfficeKVM, okvm, viewMenu, tuples, 3, ID, Description, Price, "
-                + "D1, Wine, 2.50, "
-                + "M2, Veg chili, 6.70"); 
+                + "D1, Bottled Water, 1.00, "
+                + "M1, Cheese burger, 9.95, "
+                + "M2, Ceasar salad, 7.90"); 
         
         runAndCheck();
     }
@@ -96,21 +99,23 @@ public class SystemTest extends TestBasis {
     @Test
     public void addExistingItemCheck(){
         //Checks if an item with an already existing menu item id is updating the menu item
-        logger.info(makeBanner("addToMenuOrderCheck"));
+        logger.info(makeBanner("addExistingItemCheck"));
         populateMenu();
         input("1 18:30, OfficeKVM, okvm, addToMenu, D2, Soda, 2.50");
+        input("1 19:00, OfficeKVM, okvm, showMenu");
         expect("1 19:00, OfficeKVM, okvm, viewMenu, tuples, 3, ID, Description, Price, "
-                + "D1, Wine, 2.50, "
+                + "D1, Bottled Water, 1.00, "
                 + "D2, Soda, 2.50, "
-                + "M2, Veg chili, 6.70"); 
+                + "M1, Cheese burger, 9.95, "
+                + "M2, Ceasar salad, 7.90"); 
         
         runAndCheck();
     }
     
     @Test(expected = AssertionError.class)
-    public void addNegativePriceItemCheck(){
+    public void addNegativePriceItemCheck() throws AssertionError{
         //Checks if an adding item with a negative price is throwing an Assertion Error
-        logger.info(makeBanner("addToMenuOrderCheck"));
+        logger.info(makeBanner("addNegativePriceItemCheck"));
         input("1 18:30, OfficeKVM, okvm, addToMenu, S1, Waffles, -8.50");
         
         runAndCheck();
@@ -128,8 +133,258 @@ public class SystemTest extends TestBasis {
         runAndCheck();
     }
 
+    @Test
+    public void addShowTicket(){
+        /* General success scenario check of the showTicket use case
+         * Checks if the items are ordered by their Id
+         * Checks if multiple items of a single menu item added, 
+         * increase the quantity of that item ordered accordingly
+         */
+        logger.info(makeBanner("addShowTicket"));
+        input("1 12:00, OfficeKVM, okvm, addToMenu, M4, Rib eye Steak, 15.90");
+        input("1 12:00, OfficeKVM, okvm, addToMenu, M15, Pork Chops, 10.30");
+        input("1 12:00, OfficeKVM, okvm, addToMenu, D25, Bottled Water, 2.50");
+        input("1 12:00, OfficeKVM, okvm, addToMenu, D3, Ouzo, 5.00");
+        input("1 12:00, OfficeKVM, okvm, addToMenu, Z3, Greek Yoghurt, 4.50");
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M4");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M4");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M15");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D3");
+        input("1 20:01, TableDisplay, td1, addMenuItem, Z3");
+        input("1 20:01, TableDisplay, td1, showTicket");
+        expect("1 20:01, TableDisplay, td1, viewTicket, tuples, 3, "
+                + "ID, Description, Count, "
+                + "D3, Ouzo, 1, "
+                + "M15, Pork Chops, 1, "
+                + "M4, Rib eye Steak, 2, "
+                + "Z3, Greek Yoghurt, 1"); 
+        
+        runAndCheck();
+    }
     
- 
+    @Test
+    public void removeFromTicket(){
+        //Checks basic removal of an item from the ticket, decrementing its quantity
+        logger.info(makeBanner("removeFromTicket"));
+        populateMenu();
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1"); // D1 Quantity:1
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1"); // D1 Quantity:2
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1"); // D1 Quantity:3
+        input("1 20:01, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M2");
+        input("1 20:01, TableDisplay, td1, removeMenuItem, D1"); // D1--; D1 Quantity:2
+        input("1 20:01, TableDisplay, td1, showTicket");
+        expect("1 20:01, TableDisplay, td1, viewTicket, tuples, 3, "
+                + "ID, Description, Count, "
+                + "D1, Bottled Water, 2, "
+                + "M1, Cheese burger, 1, "
+                + "M2, Ceasar salad, 1"); 
+        
+        runAndCheck();
+    }
+    
+    @Test
+    public void removeItemFromTicket(){
+        /* Checks that when a removal of an item from the ticket, 
+         * makes the quantity of that item zero, the item is removed
+         * 
+         */
+        logger.info(makeBanner("removeItemFromTicket"));
+        populateMenu();
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1"); // D1 Quantity:1
+        input("1 20:01, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M2");
+        input("1 20:01, TableDisplay, td1, removeMenuItem, D1"); // D1--; D1 Quantity:0
+        input("1 20:01, TableDisplay, td1, showTicket");
+        expect("1 20:01, TableDisplay, td1, viewTicket, tuples, 3, "
+                + "ID, Description, Count, "
+                + "M1, Cheese burger, 1, "
+                + "M2, Ceasar salad, 1"); 
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void removeNotItemInOrder() throws AssertionError{
+        /* Checks if an assertion error is thrown when there is an attempt 
+         * to remove an item from the order ticket that is not inside
+         * 
+         */
+        logger.info(makeBanner("removeNotItemInOrder"));
+        populateMenu();
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1"); 
+        input("1 20:01, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M2");
+        input("1 20:01, TableDisplay, td1, removeMenuItem, D2"); 
+        //Item with menu id D2 is not in the order ticket
+        
+        runAndCheck();
+    }
+    
+    
+    @Test(expected = AssertionError.class)
+    public void showMenuNoOrder() throws AssertionError{
+        /* Checks if an assertion error is thrown when there is an
+         * attempt to display the menu when an order has not
+         * been initialised.
+         * 
+         */
+        logger.info(makeBanner("showMenuNoOrder"));
+        populateMenu();
+        input("1 20:01, TableDisplay, td1, showMenu");
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void showTicketNoOrder() throws AssertionError{
+        /* Checks if an assertion error is thrown when there is an
+         * attempt to display an order ticket when an order has not
+         * been initialised.
+         * 
+         */
+        logger.info(makeBanner("showTicketNoOrder"));
+        populateMenu();
+        input("1 20:01, TableDisplay, td1, showTicket");
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void addNoOrder() throws AssertionError{
+        /* Checks if an assertion error is thrown when there is an
+         * attempt to add an item to an order when an order has not
+         * been initialised.
+         * 
+         */
+        logger.info(makeBanner("addNoOrder"));
+        populateMenu();
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1");
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void removeNoOrder() throws AssertionError{
+        /* Checks if an assertion error is thrown when there is an
+         * attempt to remove an item to an order when an order has not
+         * been initialised.
+         * 
+         */
+        logger.info(makeBanner("removeNoOrder"));
+        populateMenu();
+        input("1 20:01, TableDisplay, td1, removeMenuItem, D1");
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void submitNoOrder() throws AssertionError{
+        /* Checks if an assertion error is thrown when there is an
+         * attempt to submit an order when an order has not
+         * been initialised.
+         * 
+         */
+        logger.info(makeBanner("submitNoOrder"));
+        populateMenu();
+        input("1 20:01, TableDisplay, td1, submitOrder");
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void payBillNoOrder() throws AssertionError{
+        /* Checks if an assertion error is thrown when there is an
+         * attempt to submit an order when an order has not
+         * been initialised.
+         * 
+         */
+        logger.info(makeBanner("payBillNoOrder"));
+        populateMenu();
+        input("1 20:01, TableDisplay, td1, payBill");
+        
+        runAndCheck();
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void startOrderTwice() throws AssertionError{
+        /* Checks if an assertion error is thrown when there is an attempt to
+         * start an order while another order has not yet finished
+         * 
+         */
+        logger.info(makeBanner("startOrderTwice"));
+        populateMenu();
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1"); 
+        input("1 20:05, TableDisplay, td1, startOrder");
+        input("1 20:06, TableDisplay, td1, addMenuItem, D1"); 
+        
+        runAndCheck();
+    }
+    
+    //submit order
+    @Test
+    public void submitOrder(){
+        /* General success scenario check of the submitOrder use case
+         * Checks if the items are ordered by their Id
+         * Checks if items in order tickets are displayed correctly, 
+         * and ordered by ticket number and then by menu item id
+         * 
+         */
+        logger.info(makeBanner("submitOrder"));
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D1");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M2");
+        input("1 20:02, TableDisplay, td1, addMenuItem, D1");
+        input("1 20:02, TableDisplay, td1, addMenuItem, D1");
+        input("1 20:03, TableDisplay, td1, addMenuItem, M1");
+        input("1 20:04, TableDisplay, td1, submitOrder");
+        input("1 20:15, TableDisplay, td2, startOrder");
+        input("1 20:16, TableDisplay, td2, addMenuItem, D2");
+        input("1 20:16, TableDisplay, td2, addMenuItem, D2");
+        input("1 20:17, TableDisplay, td2, addMenuItem, M2");
+        input("1 20:17, TableDisplay, td2, addMenuItem, M2");
+        input("1 20:18, TableDisplay, td2, submitOrder");
+        
+        runAndCheck();
+    }
+    
+    @Test
+    public void addTicketPayBill(){
+        /* General success scenario check of the addTicketPayBill use case
+         * Checks if the total is calculated correctly from the given quantities of the items
+         * 
+         */
+        logger.info(makeBanner("addTicketPayBill"));
+        input("1 12:00, OfficeKVM, okvm, addToMenu, M23, Cod Fillet, 8.95");
+        input("1 12:00, OfficeKVM, okvm, addToMenu, M7, Lasagne, 10.20");
+        input("1 12:00, OfficeKVM, okvm, addToMenu, D1, Soft Drink, 1.50");
+        input("1 12:00, OfficeKVM, okvm, addToMenu, D2, Beer, 4.30");
+        input("1 20:00, TableDisplay, td1, startOrder");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M7");
+        input("1 20:01, TableDisplay, td1, addMenuItem, M23");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D2");
+        input("1 20:01, TableDisplay, td1, addMenuItem, D2");
+        input("1 20:02, TableDisplay, td1, submitOrder");
+        
+        input("1 21:30, TableDisplay, td1, payBill");
+        expect("1 21:30, TableDisplay, td1, approveBill, Total:, 27.75");
+        
+        input("1 21:32, CardReader, cr1, acceptCardDetails, STE1337");
+        expect("1 21:32, BankClient, bc, makePayment, STE1337, 27.75");
+        
+        input("1 21:33, BankClient, bc, acceptAuthorisationCode, SKAT");
+        expect("1 21:33, ReceiptPrinter, rp1, takeReceipt, Total:, 27.75, AuthCode:, SKAT");
+        
+    }
+    
+    //start new order after paying
+    
    /*
     * Put all your JUnit system-level tests above.
     ***********************************************************************

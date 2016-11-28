@@ -30,7 +30,6 @@ public class CardReader extends AbstractInputDevice {
      * 
      * @return an authorisation code for the payment
      * 
-     * WRONG RETURNS CARD DETAILS!!! NOOB pbj...
      */
     public String waitForCardDetails() {
          

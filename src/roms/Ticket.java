@@ -33,45 +33,55 @@ public class Ticket {
     
     public void setId(int id){
         //Id is set when the ticket is submitted
+        logger.fine("Entry");
         this.id=id;
     }
     
     public int getId(){
+        logger.fine("Entry");
         return id;
     }
     
     public Money getAmount() {
+        logger.fine("Entry");
         return amount;
     }
     
     public String getTableID() { 
+        logger.fine("Entry");
         return tableID; 
     }
 
     //setAmount is only used internally to update the total amount so it's private
     private void setAmount(Money amount) {
+        logger.fine("Entry");
         this.amount = amount;
     }
     
     public void setDate(Date date) {
+        logger.fine("Entry");
         this.date=date;
     }
     
     public Date getDate() {
+        logger.fine("Entry");
         return date;
     }
     
     public ArrayList<OrderItem> getOrder(){
+        logger.fine("Entry");
         return order;
     }
     
     public void add(MenuItem item){
+        logger.fine("Entry");
         boolean exists=false;
         for (OrderItem orderItem: order){
-            if (orderItem.getItem().equals(orderItem)){
+            if (orderItem.getItem().equals(item)){
                 //item already exists in the order list, just increment the quantity
                 exists=true;
                 orderItem.incrementQuantity(1);
+                logger.fine("Item already in Order Ticket, quantity incremented successfully");
                 break;
             }
         }
@@ -102,6 +112,7 @@ public class Ticket {
     }
     
     public void remove(String menuItemId){
+        logger.fine("Entry");
         boolean exists=false;
         for (OrderItem orderItem: order){
             if (orderItem.getItem().getId().equals(menuItemId)){
@@ -112,15 +123,17 @@ public class Ticket {
                 //if the target OrderItem's quantity is just 1, remove the item from the list
                 if (orderItem.getQuantity()==1){
                     order.remove(orderItem);
+                    logger.fine("Item removed from the Order Ticket successfully");
                 }else{
                     //otherwise just decrement the quantity
                     orderItem.incrementQuantity(-1);
+                    logger.fine("Item quantity in the Order Ticket decremented successfully");
                 }
                 break;
             }
         }
         //if the target item doesn't exist throw an AssertionError
-        assert (!exists):"Attempt to delete non-existing item from order ticket";
+        assert (exists):"Attempt to delete non-existing item from order ticket";
     }
     
     /**
@@ -148,11 +161,11 @@ public class Ticket {
         //converts the Ticket to a string for printing
         logger.fine("Entry");
         String[] stringArray=new String[order.size()*3];
-        for (int i=0;i<stringArray.length;i+=3){
+        for (int i=0;i<order.size();i++){
             OrderItem item= order.get(i);
-            stringArray[i]=item.getItem().getId();
-            stringArray[i+1]=item.getItem().getDescription();
-            stringArray[i+2]=Integer.toString(item.getQuantity());
+            stringArray[i*3]=item.getItem().getId();
+            stringArray[i*3+1]=item.getItem().getDescription();
+            stringArray[i*3+2]=Integer.toString(item.getQuantity());
         }
         List<String> ss = new ArrayList<String>();
         ss.addAll(Arrays.asList(stringArray));

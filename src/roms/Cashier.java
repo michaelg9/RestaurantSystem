@@ -1,5 +1,7 @@
 package roms;
 
+import java.util.logging.Logger;
+
 public class Cashier {
     /**
      * Mediator class that coordinates the pay bill use case.
@@ -10,16 +12,20 @@ public class Cashier {
     private CardReader cardReader;
     private BankClient bankClient;
     private ReceiptPrinter receiptPrinter;
+    protected static final Logger logger = Logger.getLogger("roms");
     
     public void setCardReader(CardReader cardReader) {
+        logger.fine("Entry");
         this.cardReader = cardReader;
     }
 
     public void setBankClient(BankClient bankClient) {
+        logger.fine("Entry");
         this.bankClient = bankClient;
     }
 
     public void setReceiptPrinter(ReceiptPrinter receiptPrinter) {
+        logger.fine("Entry");
         this.receiptPrinter = receiptPrinter;
     }
     
@@ -37,6 +43,7 @@ public class Cashier {
         String authorizationCode=bankClient.authorisePayment(cardDetails, total);
         //print the receipt which includes total amount and the authorisation code. Output event. 
         receiptPrinter.printReceipt(total, authorizationCode);
+        logger.fine("Payment was made successfully");
     }
 
 }

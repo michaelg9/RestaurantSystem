@@ -4,8 +4,8 @@
 package roms;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * The Order rack
@@ -16,27 +16,32 @@ import java.util.List;
 public class Rack {
     //Keeps the last Ticket number assigned during the submission of a ticket
     private int counter = 0; 
-    //
+    //Hold all the order in the Order Rack currently to be processed in the kitchen
     private ArrayList<Ticket> orders=new ArrayList<Ticket>(); 
-    
+    protected static final Logger logger = Logger.getLogger("roms");
     
     public int getCounter(){
         //Returns the Ticket number to be assigned during the submission of a ticket
+        logger.fine("Entry");
         counter++; //Increment it so that the new ticket submitted takes the a new unique integer as Ticket Id
         return counter;
     }
     
     public void submitOrder(Ticket order){
         //Each order is added at the back of the order rack
+        logger.fine("Entry");
         orders.add(order);
+        logger.fine("Order added to the order rack successfully");
     }
     
     public void removeOrder(int orderId){
+        logger.fine("Entry");
         boolean removed = false;
         for(int i=0; i<orders.size();i++){
             if(orders.get(i).getId() == orderId){
                 orders.remove(i);
                 removed = true;
+                logger.fine("Order removed from the order rack successfully");
                 break;
             }
         }
@@ -82,6 +87,7 @@ public class Rack {
      * @return
      */
     public List<String> toStrings() {
+        logger.fine("Entry");
         List<String> ss = new ArrayList<String>();
         //Items already ordered
         for (Ticket ticket:orders){

@@ -95,34 +95,30 @@ public class TableDisplay extends AbstractIODevice {
     //mediator class for Menu Operations
     OfficeOperations officeOps;
     public void setOfficeOperations(OfficeOperations officeOps){
-        logger.fine("Entry");
         this.officeOps = officeOps;
     }
     Rack rack;
     public void setRack(Rack rack){
-        logger.fine("Entry");
         this.rack = rack;
     }
     Ticket ticket;
-
+<<<<<<< HEAD
     String id;
     public void setId(String id){
-        logger.fine("Entry");
         this.id = id;
     }
     public String getId(){ //TODO: CHECK IF UNWANTED
-        logger.fine("Entry");
         return id;
     }
-
+=======
     
     //mediator class for the pay bill use case
     Cashier cashier;
     public void setCashier(Cashier cashier){
-        logger.fine("Entry");
         this.cashier=cashier;
     }
     
+>>>>>>> da09d13aaab5db1ccb75e1ece79347d298cc1856
     /*
      * SUPPORT FOR TRIGGER INPUT MESSAGES
      */
@@ -133,9 +129,11 @@ public class TableDisplay extends AbstractIODevice {
         //We assume that no other orders can be made,
         //until the bill of an already placed order is paid
         assert(ticket == null):"Order already in place";
-        assert(id != null):"Table Display not assigned an id";
         ticket  = new Ticket(id);
-
+        //TODO: If we use ticketId uncomment below
+        //ticket = new Ticket("ti"+getInstanceName().charAt(2), getInstanceName());
+        // Takes the iString as done in the setupSystem naming convention "new TableDisplay("td" + iString)"
+        // and appends it to the string "ti" to generate the ticketId
     }
     public void showMenu() {
         logger.fine(getInstanceName());
@@ -149,30 +147,25 @@ public class TableDisplay extends AbstractIODevice {
     }
     public void addMenuItem(String menuID) {
         logger.fine(getInstanceName());
-        assert(ticket != null):"An order has to be initiated first";
         ticket.add(officeOps.getMenu().getItem(menuID));
     }
     public void removeMenuItem(String menuID) {
         logger.fine(getInstanceName());
-        assert(ticket != null):"An order has to be initiated first";
         ticket.remove(menuID);
     }
     public void submitOrder() {
         logger.fine(getInstanceName());
-        assert(ticket != null):"An order has to be initiated first";
         ticket.setId(rack.getCounter());
         ticket.setDate(Clock.getInstance().getDateAndTime());
         rack.submitOrder(ticket);
     }
     public void payBill() {
         logger.fine(getInstanceName());
-        assert(ticket != null):"An order has to be initiated first";
         //approveBill output event, displays that total amount to the screen for confirmation
         Money total=ticket.getAmount();
         displayBill(total);
         cashier.pay(total);
-        ticket = null;
-        logger.fine("System ready for another order");        
+        
     }
 
     /*
@@ -214,7 +207,6 @@ public class TableDisplay extends AbstractIODevice {
     }
     
     public void displayBill(Money total) {
-        logger.fine("Entry");
         List<String> messageArgs = new ArrayList<String>();
         messageArgs.add("Total:");
         messageArgs.add(total.toString());
