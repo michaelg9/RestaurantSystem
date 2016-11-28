@@ -76,7 +76,6 @@ public class Clock extends AbstractInputDevice {
     public static Clock getInstance() {
         return instance;
     }
-     
    
     /**
      * Set date and time. 

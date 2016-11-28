@@ -97,10 +97,19 @@ public class TableDisplay extends AbstractIODevice {
     public void setOfficeOperations(OfficeOperations officeOps){
         this.officeOps = officeOps;
     }
-    Rack rack;
-    public void setRack(Rack rack){
-        this.rack = rack;
+    
+    //mediator class for the submit order use case
+    KitchenCoordinator kitchenCoordinator;
+    public void setKitchenCoordinator(KitchenCoordinator kitchenCoordinator){
+        this.kitchenCoordinator = kitchenCoordinator;
     }
+    
+    //mediator class for the pay bill use case
+    Cashier cashier = new Cashier();
+    public Cashier getCashier(){
+        return cashier;
+    }
+    //represents the ticket currently being created / processed in the kitchen
     Ticket ticket;
 
     //id of the each table display is the table's tableID 
@@ -109,11 +118,7 @@ public class TableDisplay extends AbstractIODevice {
         this.id = id;
     }
     
-    //mediator class for the pay bill use case
-    Cashier cashier = new Cashier();
-    public Cashier getCashier(){
-        return cashier;
-    }
+
     
     /*
      * SUPPORT FOR TRIGGER INPUT MESSAGES
@@ -150,9 +155,7 @@ public class TableDisplay extends AbstractIODevice {
     public void submitOrder() {
         logger.fine(getInstanceName());
         assert(ticket != null):"An order has to be initiated first";
-        ticket.setId(rack.getCounter());
-        ticket.setDate(Clock.getInstance().getDateAndTime());
-        rack.submitOrder(ticket);
+        kitchenCoordinator.submitOrder(ticket);
     }
     public void payBill() {
         logger.fine(getInstanceName());

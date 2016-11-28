@@ -28,6 +28,16 @@ public class KitchenCoordinator {
         this.kitchenDisplay = kitchenDisplay;
     }
     
+    /**
+     * coordinating method called by the TableDisplay when the customer wants to submit the order
+     * used to put the pending order in the rack to be displayed in the kitchen
+     */
+    public void submitOrder(Ticket ticket){
+        ticket.setId(orderRack.getCounter());
+        ticket.setDate(Clock.getInstance().getDateAndTime());
+        orderRack.submitOrder(ticket);
+    }
+    
     
     /**
      * coordinating method called by the clock on regular intervals
