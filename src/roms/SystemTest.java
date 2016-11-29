@@ -591,6 +591,22 @@ public class SystemTest extends TestBasis {
         //Update wine price
         input("1 18:08, OfficeKVM, okvm, addToMenu, D4, Wine, 4.00"); 
         
+        //Remove Greek Gyros from the menu
+        input("1 18:10, OfficeKVM, okvm, removeFromMenu, M5");
+        
+        input("1 18:10, OfficeKVM, okvm, showMenu");
+        expect("1 18:10, OfficeKVM, okvm, viewMenu, tuples, 3, "
+                + "    ID,              Description, Price, "
+                + "    D1,            Bottled Water,  1.00, "
+                + "    D2,                     Beer,  4.50, "
+                + "    D3,                     Ouzo,  3.00, "
+                + "    D4,                     Wine,  4.00, "
+                + "    D5,                     Soda,  2.50, "
+                + "    M1,            Cheese burger,  9.95, "
+                + "    M2,             Ceasar salad,  7.90, "
+                + "    M3,         Hunter's Chicken,  7.50, "
+                + "    M4, Haggis neeps and tatties,  8.50");
+        
         //Table 1 starts order
         input("1 20:00, TableDisplay, td1, startOrder"); 
         input("1 20:01, TableDisplay, td1, addMenuItem, M4");
