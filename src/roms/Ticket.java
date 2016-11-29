@@ -27,14 +27,19 @@ public class Ticket {
     private boolean firstItemReady=false;
     //indicates if all the orderItems of the Ticket are ready   
     private boolean finished=false;
-    
+
     public Ticket(String tableID) {
         logger.fine("Entry");
         //amount is initialised to 0
         amount=new Money();
         this.tableID=tableID;
     }
-    
+
+    /*
+     * called each time an item in the ticket is indicated ready
+     * checks all orderItems in the list if they are done
+     * if all of the are, it sets the finished boolean field to true
+     */
     public boolean isFinished() {
         logger.fine("Entry");
         finished=true;
@@ -43,15 +48,8 @@ public class Ticket {
                 finished=false;
             }
         }
-        
         return finished;
     }
-    
-    /*
-     * called each time an item in the ticket is indicated ready
-     * checks all orderItems in the list if they are done
-     * if all of the are, it sets the finished boolean field to true
-     */
 
     public boolean isFirstItemReady() {
         return firstItemReady;
@@ -60,12 +58,12 @@ public class Ticket {
     public void setFirstItemReady() {
         this.firstItemReady = true;
     }
-    
+
     public void setId(int id){
-        //Id is set when the ticket is submitted
+        //Id is set when the ticket is submitted, not when created
         this.id=id;
     }
-    
+
     public int getId(){
         /*Check that id is greater than 0 because id is initialised as 0 and 
          * then when the order is submitted id is changed to a greater value
@@ -73,11 +71,11 @@ public class Ticket {
         assert(id >0):"Order not yet submitted";
         return id;
     }
-    
+
     public Money getAmount() {
         return amount;
     }
-    
+
     public String getTableID() { 
         return tableID; 
     }
@@ -86,22 +84,21 @@ public class Ticket {
     private void setAmount(Money amount) {
         this.amount = amount;
     }
-    
+
     public void setDate(Date date) {
         this.date=date;
     }
-    
+
     public Date getDate() {
         return date;
     }
-    
+
     public ArrayList<OrderItem> getOrder(){
         return order;
     }
-    
+
     //retrieves the orderItem with the given menuID from the order list
     public OrderItem getOrderItem(String menuID){
-        logger.fine("Entry");
         OrderItem target=null;
         for (OrderItem item:order){
             if (item.getItem().getId().equals(menuID)){
@@ -112,7 +109,7 @@ public class Ticket {
         assert (target!=null): "Attempt to retrieve a non-existing OrderItem from a ticket";
         return target;
     }
-    
+
     //adds a new menuItem in the order list
     public void add(MenuItem item){
         logger.fine("Entry");
@@ -151,7 +148,7 @@ public class Ticket {
         //update the total amount
         setAmount(getAmount().add(item.getPrice()));
     }
-    
+
     //removes the menu item with menuItemID from the order list
     public void remove(String menuItemId){
         logger.fine("Entry");
@@ -177,7 +174,7 @@ public class Ticket {
         //if the target item doesn't exist throw an AssertionError
         assert (exists):"Attempt to delete non-existing item from order ticket";
     }
-    
+
     /**
      * Format ticket as list of strings, with, per ticket item, 3 strings for 
      * respectively:
@@ -213,6 +210,6 @@ public class Ticket {
         ss.addAll(Arrays.asList(stringArray));
         return ss;
     }
-    
-    
+
+
 }

@@ -109,7 +109,8 @@ public class TableDisplay extends AbstractIODevice {
     public Cashier getCashier(){
         return cashier;
     }
-    //represents the ticket currently being created / processed in the kitchen
+    //represents the ticket currently being created by this  
+    //table display or while being processed in the kitchen
     Ticket ticket;
 
     //id of the each table display is the table's tableID 
@@ -162,8 +163,11 @@ public class TableDisplay extends AbstractIODevice {
         assert(ticket != null):"An order has to be initiated first";
         //approveBill output event, displays that total amount to the screen for confirmation
         Money total=ticket.getAmount();
+        //display total amount to the customer
         displayBill(total);
+        //trigger cashier class to handle the pay bill use case
         cashier.pay(total);
+        //ticket is nulled so a new customer can start a new order
         ticket = null;
         logger.fine("System ready for another order");        
     }

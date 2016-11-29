@@ -131,7 +131,7 @@ public class Clock extends AbstractInputDevice {
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
      * The passbutton is the trigger of the cancelReadyUpLight
-     * use case so it needs to send a message to the kitchen coordinator
+     * use case so it a reference to the kitchen coordinator
      */
     private KitchenCoordinator kitchenCoordinator;
     public void setKitchenCoordinator(KitchenCoordinator kitchenCoordinator){

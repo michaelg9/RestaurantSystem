@@ -57,7 +57,8 @@ public class PassButton extends AbstractInputDevice {
     /*
      * FIELD(S) AND SETTER(S) FOR MESSAGE DESTINATIONS
      */
-    
+    //Pass button sends a message to Pass light through
+    //the kitchen coordinator mediator class
     private KitchenCoordinator kitchenCoordinator;
     public void setKitchenCoordinator(KitchenCoordinator kitchenCoordinator){
         this.kitchenCoordinator=kitchenCoordinator;

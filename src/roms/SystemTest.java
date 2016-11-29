@@ -737,12 +737,13 @@ public class SystemTest extends TestBasis {
             tableDisplay.setCollector(collector);
             tableDisplays.add(tableDisplay);
             
-            
+            //setting up all receipt printers
             ReceiptPrinter receiptPrinter = 
                     new ReceiptPrinter("rp" + iString);
             receiptPrinter.setCollector(collector);
             receiptPrinters.add(receiptPrinter);
             
+            //setting up all card readers
             CardReader cardReader = 
                     new CardReader("cr" + iString);
             cardReader.addDistributorLinks(distributor);

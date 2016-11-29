@@ -1,12 +1,18 @@
 package roms;
+
+import java.util.logging.Logger;
+
 /**
  * Mediator class that coordinates the use cases that belong in the kitchen
- * Coordinates ShowRack, IndicateItemReady, CancelReadyUpLight use cases
- * 
+ * Coordinates SubmitOrder, ShowRack, IndicateItemReady, CancelReadyUpLight use cases
+ * Triggered by KitchenDisplay for the IndicateItemReady,
+ * by TableDisplay for the SubmitOrder use case,
+ * by the Clock for the ShowRack use case,
+ * by the PassButton for the CancelReadyUpLight
  */
 
 public class KitchenCoordinator {
-    
+    private static final Logger logger = Logger.getLogger("roms");
     private KitchenDisplay kitchenDisplay;
     private Rack orderRack;
     private TicketPrinter ticketPrinter;
@@ -33,6 +39,7 @@ public class KitchenCoordinator {
      * used to put the pending order in the rack to be displayed in the kitchen
      */
     public void submitOrder(Ticket ticket){
+        logger.fine("Submitting order...");
         ticket.setId(orderRack.getCounter());
         ticket.setDate(Clock.getInstance().getDateAndTime());
         orderRack.submitOrder(ticket);
@@ -44,6 +51,7 @@ public class KitchenCoordinator {
      * used to refresh the screen with the orders and their waiting times
      */
     public void refreshOrderRack(){
+        logger.fine("Refreshing rack");
         kitchenDisplay.displayRack(orderRack);
     }
     
@@ -55,6 +63,7 @@ public class KitchenCoordinator {
      */
      
     public void indicateItemReady(int ticketNumber, String menuID){
+        logger.fine("Indicating item ready...");
         Ticket ticket=orderRack.getTicket(ticketNumber);
         if (!ticket.isFirstItemReady()){
             //No items have been indicated ready yet, thus the order ticket has to be printed
@@ -74,6 +83,7 @@ public class KitchenCoordinator {
      * used to turn the passlight off
      */
     public void cancelReadyUp() {
+        logger.fine("Cancelling ready up light");
         passLight.switchOff();
     }
 

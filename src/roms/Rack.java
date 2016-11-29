@@ -22,29 +22,29 @@ public class Rack {
     
     public int getCounter(){
         //Returns the Ticket number to be assigned during the submission of a ticket
-        logger.fine("Entry");
         counter++; //Increment it so that the new ticket submitted takes the a new unique integer as Ticket Id
         return counter;
     }
     
     public void submitOrder(Ticket order){
         //Each order is added at the back of the order rack
-        logger.fine("Entry");
+        logger.fine("Adding ticket to rack...");
         orders.add(order);
-        logger.fine("Order added to the order rack successfully");
     }
     
     public void removeOrder(int orderId){
-        logger.fine("Entry");
+        logger.fine("Removing ticket from rack...");
         boolean removed = false;
         for(int i=0; i<orders.size();i++){
             if(orders.get(i).getId() == orderId){
+                //target ticket found
                 orders.remove(i);
                 removed = true;
                 logger.fine("Order removed from the order rack successfully");
                 break;
             }
         }
+        //if it hasn't been removed then it doesn't exist
         assert(removed):"Order to be removed not in order rack";
         return;
     }
@@ -61,7 +61,6 @@ public class Rack {
     }
     
     public Ticket getTicket(int ticketNumber){
-        logger.fine("Entry");
         Ticket targetTicket=null;
         for (Ticket ticket: orders){
             if (ticket.getId()==ticketNumber){
