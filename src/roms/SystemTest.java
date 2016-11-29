@@ -24,6 +24,7 @@ public class SystemTest extends TestBasis {
      
     @Test 
     public void cancelReadyUpLight() {
+        //Checks the CancelReadyUpLight use case
         logger.info(makeBanner("cancelReadyUpLight"));
         input("1 18:00, PassButton, pb, press");
         expect("1 18:00, PassLight, pl, viewSwitchedOff");
@@ -590,12 +591,13 @@ public class SystemTest extends TestBasis {
         //Update wine price
         input("1 18:08, OfficeKVM, okvm, addToMenu, D4, Wine, 4.00"); 
         
-        //Table 2 starts order
+        //Table 1 starts order
         input("1 20:00, TableDisplay, td1, startOrder"); 
         input("1 20:01, TableDisplay, td1, addMenuItem, M4");
         input("1 20:01, TableDisplay, td1, addMenuItem, M4");
         input("1 20:02, TableDisplay, td1, addMenuItem, D1");
-        //Table 1 starts order
+        input("1 20:02, TableDisplay, td1, addMenuItem, D2");
+        //Table 2 starts order
         input("1 20:03, TableDisplay, td2, startOrder"); 
         input("1 20:03, TableDisplay, td2, addMenuItem, M2");
         
@@ -611,19 +613,132 @@ public class SystemTest extends TestBasis {
         //Table 2 submitted its order
         input("1 20:05, TableDisplay, td2, submitOrder"); 
         //Clock tick
+        input("1 20:07, Clock, c, tick");
+        expect("1 20:07, KitchenDisplay, kd, viewRack, tuples, 6, "
+                + "Time, Ticket#, MenuID, Description, #Ordered, #Ready, "
+                + "2, 1, M1, Cheese burger, 1, 0, "
+                + "2, 1, M2, Ceasar salad, 1, 0");
         //Table 1 previews its order ticket
+        input("1 20:08, TableDisplay, td1, showTicket");
+        expect("1 20:08, TableDisplay, td1, viewTicket, tuples, 3, "
+                + "ID, Description, Count, "
+                + "D1, Bottled Water, 1, "
+                + "D2, Beer, 1, "
+                + "M1, Cheese burger, 1, "
+                + "M4, Haggis neeps and tatties, 2");
         //Table 1 removes M1 from order
+        input("1 20:09, TableDisplay, td1, removeMenuItem, M1");
         //Table 1 submits order
+        input("1 20:09, TableDisplay, td1, submitOrder");
         //Clock tick
+        input("1 20:10, Clock, c, tick");
+        expect("1 20:10, KitchenDisplay, kd, viewRack, tuples, 6, "
+                + "Time, Ticket#, MenuID, Description, #Ordered, #Ready, "
+                + "5,       1,     M1,            Cheese burger,        1,      0, "
+                + "5,       1,     M2,             Ceasar salad,        1,      0, "
+                + "1,       2,     D1,            Bottled Water,        1,      0, "
+                + "1,       2,     D2,                     Beer,        1,      0, "
+                + "1,       2,     M4, Haggis neeps and tatties,        2,      0");
         //Chef indicates that the first item of the first order is ready
-        //Other items ready
+        input("1 20:12, KitchenDisplay, kd, itemReady, 1, M2");
+        expect("1 20:12, TicketPrinter, tp, takeTicket, tuples, 3, "
+                + "Table:, Tab-2, _, "
+                + "ID, Description, Count, "
+                + "M1, Cheese burger,     1, "
+                + "M2,  Ceasar salad,     1");
         //Chef indicates that the first item of the second order is ready
+        input("1 20:14, KitchenDisplay, kd, itemReady, 2, D1");
+        expect("1 20:14, TicketPrinter, tp, takeTicket, tuples, 3, "
+                + "Table:, Tab-1, _, "
+                + "ID, Description, Count, "
+                + "D1,            Bottled Water,     1, "
+                + "D2,                     Beer,     1, "
+                + "M4, Haggis neeps and tatties,     2");
         //Other items ready
+        input("1 20:19, KitchenDisplay, kd, itemReady, 2, D2");
         //First order (table 2) is ready
+        input("1 20:19, KitchenDisplay, kd, itemReady, 1, M1");
+        expect("1 20:19, PassLight, pl, viewSwitchedOn");
         //Other items ready
+        input("1 20:21, KitchenDisplay, kd, itemReady, 2, M4");
+        //Clock Tick
+        input("1 20:22, Clock, c, tick");
+        expect("1 20:22, KitchenDisplay, kd, viewRack, tuples, 6, "
+                + "Time, Ticket#, MenuID, Description, #Ordered, #Ready, "
+                + "13,       2,     D1,            Bottled Water,        1,      1, "
+                + "13,       2,     D2,                     Beer,        1,      1, "
+                + "13,       2,     M4, Haggis neeps and tatties,        2,      1"); 
         //No orders ready so waiter closes pass light
+        input("1 20:23, PassButton, pb, press");
+        expect("1 20:23, PassLight, pl, viewSwitchedOff");
+        //Table 2 pays its bill
+        input("1 21:25, TableDisplay, td2, payBill");
+        expect("1 21:25, TableDisplay, td2, approveBill, Total:, 17.85"); 
+        
+        input("1 21:26, CardReader, cr2, acceptCardDetails, MIHPZNED");
+        expect("1 21:26, BankClient, bc, makePayment, MIHPZNED, 17.85");
+        
+        input("1 21:27, BankClient, bc, acceptAuthorisationCode, ATED");
+        expect("1 21:27, ReceiptPrinter, rp2, takeReceipt, Total:, 17.85, AuthCode:, ATED");
+        //New Customer Table 2 starts order
+        input("1 20:28, TableDisplay, td2, startOrder");
+        input("1 20:28, TableDisplay, td2, addMenuItem, M1");
+        input("1 20:29, TableDisplay, td2, addMenuItem, M2");
+        input("1 20:29, TableDisplay, td2, addMenuItem, D2");
+        input("1 20:30, TableDisplay, td2, addMenuItem, D2");
+        //Table 2 submits order
+        input("1 20:30, TableDisplay, td2, submitOrder");
+        //Clock tick
+        input("1 20:31, Clock, c, tick");
+        expect("1 20:31, KitchenDisplay, kd, viewRack, tuples, 6, "
+                + "Time, Ticket#, MenuID, Description, #Ordered, #Ready, "
+                + "22,       2,     D1,            Bottled Water,        1,      1, "
+                + "22,       2,     D2,                     Beer,        1,      1, "
+                + "22,       2,     M4, Haggis neeps and tatties,        2,      1, "
+                + " 1,       3,     D2,                     Beer,        2,      0, "
+                + " 1,       3,     M1,            Cheese burger,        1,      0, "
+                + " 1,       3,     M2,             Ceasar salad,        1,      0");
         //Second order (table 1) is ready
-        //Table 2 wants to pay its bill
+        input("1 20:32, KitchenDisplay, kd, itemReady, 2, M4");
+        expect("1 20:32, PassLight, pl, viewSwitchedOn");
+        //No orders ready so waiter closes pass light
+        input("1 20:23, PassButton, pb, press");
+        expect("1 20:23, PassLight, pl, viewSwitchedOff");
+        //Chef indicates that the first item of the third order is ready
+        input("1 20:25, KitchenDisplay, kd, itemReady, 3, D2");
+        expect("1 20:25, TicketPrinter, tp, takeTicket, tuples, 3, "
+                + "Table:, Tab-2, _, "
+                + "ID,   Description, Count, "
+                + "D2,          Beer,     2, "
+                + "M1, Cheese burger,     1, "
+                + "M2,  Ceasar salad,     1");//TODO: CHANGE, NOTICE IF ITS TAB-2
+        input("1 20:26, KitchenDisplay, kd, itemReady, 3, D2");
+        input("1 20:35, KitchenDisplay, kd, itemReady, 3, M1");
+        //Third order (table 3) is ready
+        input("1 20:37, KitchenDisplay, kd, itemReady, 3, M2");
+        expect("1 20:37, PassLight, pl, viewSwitchedOn");
+        //Table 1 pays its bill
+        input("1 21:40, TableDisplay, td1, payBill");
+        expect("1 21:40, TableDisplay, td1, approveBill, Total:, 22.50"); 
+        
+        input("1 21:41, CardReader, cr1, acceptCardDetails, ERTKODS");
+        expect("1 21:41, BankClient, bc, makePayment, ERTKODS, 22.50"); 
+        
+        input("1 21:42, BankClient, bc, acceptAuthorisationCode, SDED");
+        expect("1 21:42, ReceiptPrinter, rp1, takeReceipt, Total:, 22.50, AuthCode:, SDED");
+        //No orders ready so waiter closes pass light
+        input("1 20:43, PassButton, pb, press");
+        expect("1 20:43, PassLight, pl, viewSwitchedOff");
+        //Table 2 pays its bill
+        input("1 21:55, TableDisplay, td2, payBill");
+        expect("1 21:55, TableDisplay, td2, approveBill, Total:, 26.85");
+        
+        input("1 21:56, CardReader, cr2, acceptCardDetails, DEAFSFES");
+        expect("1 21:56, BankClient, bc, makePayment, DEAFSFES, 26.85");
+        
+        input("1 21:57, BankClient, bc, acceptAuthorisationCode, ATDD");
+        expect("1 21:57, ReceiptPrinter, rp2, takeReceipt, Total:, 26.85, AuthCode:, ATDD");
+
         runAndCheck();
     }
     
